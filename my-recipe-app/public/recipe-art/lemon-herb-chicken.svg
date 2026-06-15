@@ -1,0 +1,30 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-labelledby="title desc">
+  <title id="title">Lemon herb chicken skillet</title>
+  <desc id="desc">Seared chicken with lemon slices and green herbs in a skillet.</desc>
+  <rect width="960" height="640" fill="#e9efe4"/>
+  <circle cx="478" cy="328" r="242" fill="#2f3430"/>
+  <circle cx="478" cy="328" r="202" fill="#464b43"/>
+  <g fill="#c8793c">
+    <path d="M279 317c20-72 123-112 188-64 38 28 32 80-12 110-65 44-195 23-176-46Z"/>
+    <path d="M491 287c44-68 157-67 205 0 34 48 2 104-68 121-81 19-178-57-137-121Z"/>
+  </g>
+  <g fill="#e8aa5a">
+    <path d="M319 300c39-31 95-39 132-13"/>
+    <path d="M532 274c48-18 102-4 137 31"/>
+  </g>
+  <g fill="#f2d66d">
+    <circle cx="361" cy="430" r="44"/>
+    <circle cx="651" cy="221" r="42"/>
+  </g>
+  <g fill="none" stroke="#f8ed9a" stroke-width="8">
+    <path d="M331 430h60"/>
+    <path d="M361 400v60"/>
+    <path d="M622 221h58"/>
+    <path d="M651 192v58"/>
+  </g>
+  <g fill="#54753f">
+    <path d="M241 230c52-6 86 9 103 45-48 5-83-10-103-45Z"/>
+    <path d="M706 432c55-10 94 3 119 38-51 11-91-2-119-38Z"/>
+    <path d="M433 447c32-38 67-52 105-42-30 39-66 53-105 42Z"/>
+  </g>
+</svg>

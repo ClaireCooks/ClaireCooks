@@ -1,0 +1,72 @@
+{
+  "id": "recipe-tomato-basil-soup",
+  "title": "Tomato Basil Soup",
+  "slug": "tomato-basil-soup",
+  "description": "A smooth, cozy tomato soup with basil, garlic, and a soft finish of cream.",
+  "image": "/recipe-art/tomato-basil-soup.svg",
+  "category": "Lunch",
+  "status": "published",
+  "difficulty": "Easy",
+  "tags": ["vegetarian", "comfort", "make-ahead"],
+  "prepTime": "10 min",
+  "cookTime": "30 min",
+  "servings": 6,
+  "createdAt": "2026-06-11",
+  "updatedAt": "2026-06-11",
+  "blocks": [
+    {
+      "type": "hero",
+      "data": {
+        "kicker": "Lunch",
+        "summary": "A comforting soup that can be made ahead and reheated beautifully."
+      }
+    },
+    {
+      "type": "ingredients",
+      "data": {
+        "items": [
+          "2 tablespoons olive oil",
+          "1 yellow onion, diced",
+          "3 cloves garlic, minced",
+          "2 cans crushed tomatoes",
+          "2 cups vegetable stock",
+          "1/2 cup fresh basil leaves",
+          "1/3 cup cream",
+          "Fine salt and black pepper"
+        ]
+      }
+    },
+    {
+      "type": "instructions",
+      "data": {
+        "steps": [
+          "Soften the onion in olive oil over medium heat.",
+          "Add garlic and cook until fragrant.",
+          "Stir in the crushed tomatoes and vegetable stock.",
+          "Simmer for 25 minutes, then add basil.",
+          "Blend until smooth and stir in the cream.",
+          "Season to taste before serving."
+        ]
+      }
+    },
+    {
+      "type": "notes",
+      "data": {
+        "items": [
+          "For a dairy-free version, use coconut milk or skip the cream.",
+          "Add a pinch of red pepper flakes for gentle heat."
+        ]
+      }
+    },
+    {
+      "type": "nutrition",
+      "data": {
+        "items": [
+          "Approx. 170 calories per serving",
+          "4g protein",
+          "9g fat"
+        ]
+      }
+    }
+  ]
+}

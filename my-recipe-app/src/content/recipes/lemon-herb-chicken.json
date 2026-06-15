@@ -1,0 +1,71 @@
+{
+  "id": "recipe-lemon-herb-chicken",
+  "title": "Lemon Herb Chicken",
+  "slug": "lemon-herb-chicken",
+  "description": "Juicy skillet chicken with bright lemon, garlic, and herbs for a quick weeknight dinner.",
+  "image": "/recipe-art/lemon-herb-chicken.svg",
+  "category": "Dinner",
+  "status": "published",
+  "difficulty": "Easy",
+  "tags": ["weeknight", "high-protein", "one-pan"],
+  "prepTime": "15 min",
+  "cookTime": "25 min",
+  "servings": 4,
+  "createdAt": "2026-06-11",
+  "updatedAt": "2026-06-11",
+  "blocks": [
+    {
+      "type": "hero",
+      "data": {
+        "kicker": "Dinner",
+        "summary": "A fast, savory main built for repeatable weeknight cooking."
+      }
+    },
+    {
+      "type": "ingredients",
+      "data": {
+        "items": [
+          "4 boneless chicken thighs",
+          "2 tablespoons olive oil",
+          "2 cloves garlic, minced",
+          "1 lemon, zested and juiced",
+          "1 teaspoon chopped rosemary",
+          "1 teaspoon chopped thyme",
+          "1/2 cup chicken stock",
+          "Fine salt and black pepper"
+        ]
+      }
+    },
+    {
+      "type": "instructions",
+      "data": {
+        "steps": [
+          "Season the chicken with salt and pepper.",
+          "Sear the chicken in olive oil until browned on both sides.",
+          "Add garlic, lemon zest, rosemary, and thyme to the pan.",
+          "Pour in the lemon juice and stock, then simmer until the chicken is cooked through.",
+          "Spoon the pan sauce over the chicken before serving."
+        ]
+      }
+    },
+    {
+      "type": "notes",
+      "data": {
+        "items": [
+          "Serve with roasted potatoes, rice, or a crisp green salad.",
+          "Chicken breasts work too, but reduce the simmering time to avoid drying them out."
+        ]
+      }
+    },
+    {
+      "type": "nutrition",
+      "data": {
+        "items": [
+          "Approx. 310 calories per serving",
+          "29g protein",
+          "18g fat"
+        ]
+      }
+    }
+  ]
+}

@@ -1,0 +1,19 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 960 640" role="img" aria-labelledby="title desc">
+  <title id="title">Tomato basil soup bowl</title>
+  <desc id="desc">A bowl of tomato soup with basil and cream.</desc>
+  <rect width="960" height="640" fill="#f3e3d6"/>
+  <ellipse cx="480" cy="358" fill="#f7f3e8" rx="292" ry="206"/>
+  <ellipse cx="480" cy="337" fill="#d95c35" rx="235" ry="157"/>
+  <path fill="#f7c19a" d="M348 310c56-51 166-54 252-11 39 19 39 49 0 67-76 36-204 24-258-24-14-12-12-22 6-32Z"/>
+  <path fill="none" stroke="#fff2d8" stroke-linecap="round" stroke-width="20" d="M359 332c71-44 171-45 246-3"/>
+  <g fill="#2f6b41">
+    <path d="M393 233c45-34 89-42 132-24-30 45-74 53-132 24Z"/>
+    <path d="M535 426c54-20 98-12 133 24-51 22-95 14-133-24Z"/>
+    <path d="M294 381c40-29 80-35 120-17-30 38-70 43-120 17Z"/>
+  </g>
+  <g fill="#b94d2e">
+    <circle cx="322" cy="294" r="18"/>
+    <circle cx="650" cy="327" r="20"/>
+    <circle cx="521" cy="248" r="15"/>
+  </g>
+</svg>

@@ -1,0 +1,82 @@
+{
+    "id": "recipe-crepes",
+    "title": "Weekend Crepes",
+    "slug": "crepes",
+    "description": "A tender, lightly sweet crepe base for breakfast spreads, fruit fillings, or savory brunch plates.",
+    "image": "/recipe-art/crepes.svg",
+    "category": "Breakfast",
+    "status": "published",
+    "difficulty": "Easy",
+    "tags": [
+      "brunch",
+      "make-ahead",
+      "vegetarian"
+    ],
+    "prepTime": "10 min",
+    "cookTime": "20 min",
+    "servings": 4,
+    "createdAt": "2026-06-11",
+    "updatedAt": "2026-06-11",
+    "blocks": [
+      {
+        "type": "hero",
+        "data": {
+          "kicker": "Breakfast",
+          "summary": "A simple recipe rendered from structured JSON content."
+        }
+      },
+      {
+        "type": "media",
+        "data": {
+          "type": "video",
+          "url": "https://www.tiktok.com/@claire_stone19/video/7648782922257911053",
+          "caption": ""
+        }
+      },
+      {
+        "type": "notes",
+        "data": {
+          "items": [
+            "For savory crepes, skip the sugar and add chopped herbs.",
+            "Leftover crepes keep well between sheets of parchment in the refrigerator."
+          ]
+        }
+      },
+      {
+        "type": "ingredients",
+        "data": {
+          "items": [
+            "1 cup all-purpose flour",
+            "2 large eggs",
+            "1 1/2 cups milk",
+            "1 tablespoon melted butter",
+            "1 teaspoon sugar",
+            "1/4 teaspoon fine salt"
+          ]
+        }
+      },
+      {
+        "type": "instructions",
+        "data": {
+          "steps": [
+            "Whisk the flour, sugar, and salt in a mixing bowl.",
+            "Add the eggs and half the milk, then whisk until smooth.",
+            "Whisk in the remaining milk and melted butter.",
+            "Rest the batter for 10 minutes while a nonstick pan warms over medium heat.",
+            "Pour a thin layer of batter into the pan, swirl, and cook until the edges lift.",
+            "Flip and cook briefly on the second side, then repeat with the remaining batter."
+          ]
+        }
+      },
+      {
+        "type": "nutrition",
+        "data": {
+          "items": [
+            "Approx. 185 calories per serving",
+            "7g protein",
+            "7g fat"
+          ]
+        }
+      }
+    ]
+  }
