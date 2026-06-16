@@ -1,9 +1,12 @@
+import { resolvePublicAsset } from '../../utils/assets'
+
 function HeroBlock({ block, recipe }) {
   const { kicker, summary, backgroundImage } = block.data
+  const resolvedBackgroundImage = resolvePublicAsset(backgroundImage)
   
   const sectionStyle = backgroundImage 
     ? { 
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url(${backgroundImage})`,
+        backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("${resolvedBackgroundImage}")`,
         backgroundSize: 'cover',
         backgroundPosition: 'center',
         color: '#fff',

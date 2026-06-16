@@ -1,4 +1,5 @@
 import { useEffect } from 'react'
+import { resolvePublicAsset } from '../../utils/assets'
 
 function MediaBlock({ block }) {
   const { type, url, caption } = block.data
@@ -20,7 +21,7 @@ function MediaBlock({ block }) {
     <section className="recipe-section media-block">
       {type === 'image' && (
         <figure className="media-figure">
-          <img src={url} alt={caption || ''} className="media-image" />
+          <img src={resolvePublicAsset(url)} alt={caption || ''} className="media-image" />
           {caption && <figcaption className="media-caption">{caption}</figcaption>}
         </figure>
       )}

@@ -61,7 +61,7 @@ export async function commitRecipe(recipe) {
         ref: BRANCH,
       })
       sha = currentFile.sha
-    } catch (e) {
+    } catch {
       // File doesn't exist yet, that's fine
     }
 

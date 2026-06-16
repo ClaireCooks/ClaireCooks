@@ -2,66 +2,68 @@ import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import RecipeRenderer from '../shared/renderer/RecipeRenderer'
 import { fetchRecipes, commitRecipe } from './services/github'
+import { createSlug } from '../shared/utils/slugs'
 
-const EMPTY_RECIPE = {
-  id: `recipe-${Date.now()}`,
-  title: 'New Recipe',
-  slug: 'new-recipe',
-  description: 'Enter a description',
-  image: '/recipe-art/crepes.svg',
-  category: 'Uncategorized',
-  status: 'draft',
-  difficulty: 'Easy',
-  prepTime: '10 min',
-  cookTime: '20 min',
-  servings: 4,
-  tags: [],
-  blocks: [
-    {
-      type: 'hero',
-      data: {
-        kicker: 'New Recipe',
-        summary: 'Enter a summary for the hero block',
+function createEmptyRecipe() {
+  return {
+    id: `recipe-${Date.now()}`,
+    title: 'New Recipe',
+    slug: '',
+    description: 'Enter a description',
+    image: '/recipe-art/crepes.svg',
+    category: 'Uncategorized',
+    status: 'draft',
+    difficulty: 'Easy',
+    prepTime: '10 min',
+    cookTime: '20 min',
+    servings: 4,
+    tags: [],
+    blocks: [
+      {
+        type: 'hero',
+        data: {
+          kicker: 'New Recipe',
+          summary: 'Enter a summary for the hero block',
+        },
       },
-    },
-    {
-      type: 'ingredients',
-      data: {
-        items: ['First ingredient'],
+      {
+        type: 'ingredients',
+        data: {
+          items: ['First ingredient'],
+        },
       },
-    },
-    {
-      type: 'instructions',
-      data: {
-        steps: ['First step'],
+      {
+        type: 'instructions',
+        data: {
+          steps: ['First step'],
+        },
       },
-    },
-  ],
+    ],
+  }
 }
 
 function AuthorEditor() {
   const { slug } = useParams()
   const navigate = useNavigate()
-  const [recipe, setRecipe] = useState(null)
+  const [recipe, setRecipe] = useState(() => (slug ? null : createEmptyRecipe()))
   const [hasChanges, setHasChanges] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
-  const [isLoading, setIsLoading] = useState(true)
+  const [isLoading, setIsLoading] = useState(() => Boolean(slug))
 
   useEffect(() => {
-    if (slug) {
-      fetchRecipes()
-        .then(all => {
-          const existing = all.find(r => r.slug === slug)
-          if (existing) {
-            setRecipe(existing)
-          }
-          setIsLoading(false)
-        })
-        .catch(() => setIsLoading(false))
-    } else {
-      setRecipe(JSON.parse(JSON.stringify(EMPTY_RECIPE)))
-      setIsLoading(false)
+    if (!slug) {
+      return
     }
+
+    fetchRecipes()
+      .then(all => {
+        const existing = all.find(r => r.slug === slug)
+        if (existing) {
+          setRecipe(existing)
+        }
+        setIsLoading(false)
+      })
+      .catch(() => setIsLoading(false))
   }, [slug])
 
   if (isLoading) return <div style={{ padding: '80px', textAlign: 'center' }}><h2>Loading recipe data...</h2></div>
@@ -123,11 +125,17 @@ function AuthorEditor() {
   const handleSave = async () => {
     setIsSaving(true)
     try {
-      await commitRecipe(recipe)
+      const recipeToSave = {
+        ...recipe,
+        slug: slug || createSlug(recipe.title),
+      }
+
+      await commitRecipe(recipeToSave)
+      setRecipe(recipeToSave)
       setHasChanges(false)
       alert('Recipe published to GitHub!')
       if (!slug) {
-        navigate(`/edit/${recipe.slug}`)
+        navigate(`/edit/${recipeToSave.slug}`)
       }
     } catch (e) {
       alert(`Failed to publish: ${e.message}`)

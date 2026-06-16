@@ -4,7 +4,7 @@ import { fileURLToPath } from 'node:url'
 import { createRecipeIndex } from '../src/shared/content/recipes/schema.js'
 
 const appRoot = dirname(dirname(fileURLToPath(import.meta.url)))
-const recipesDir = join(appRoot, 'src', 'content', 'recipes')
+const recipesDir = join(appRoot, 'src', 'shared', 'content', 'recipes')
 const recipeFiles = (await readdir(recipesDir)).filter((file) => file.endsWith('.json'))
 
 const recipes = await Promise.all(

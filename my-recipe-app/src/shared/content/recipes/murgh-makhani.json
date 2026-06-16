@@ -1,7 +1,7 @@
 {
   "id": "recipe-1781584289865",
   "title": "Murgh Makhani",
-  "slug": "new-recipe",
+  "slug": "murgh-makhani",
   "description": "Authentic Style North Indian butter chicken",
   "image": "/recipe-art/crepes.svg",
   "category": "Uncategorized",
@@ -38,8 +38,7 @@
           "2 teaspoon salt",
           "1 tablespoon sugar",
           "1/2 cup heavy cream",
-          "fresh cilantro",
-          ""
+          "fresh cilantro"
         ]
       }
     },

@@ -1,6 +1,7 @@
 import { Link } from 'react-router-dom'
 import { publishedRecipes } from '../shared/content/recipes'
 import claireImg from '../shared/assets/Claire.jpg'
+import { resolvePublicAsset } from '../shared/utils/assets'
 
 function Home() {
   const recentRecipes = publishedRecipes.slice(0, 3)
@@ -29,7 +30,7 @@ function Home() {
         <div className="recipe-carousel">
           {recentRecipes.map(recipe => (
             <Link key={recipe.slug} to={`/recipes/${recipe.slug}`} className="carousel-card">
-              <img src={recipe.image} alt={recipe.title} />
+              <img src={resolvePublicAsset(recipe.image)} alt={recipe.title} />
               <div className="card-overlay">
                 <span className="category">{recipe.category}</span>
                 <h3>{recipe.title}</h3>

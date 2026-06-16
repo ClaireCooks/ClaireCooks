@@ -1,19 +1,13 @@
-import { useMemo, useState, useEffect } from 'react'
+import { useMemo, useState } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
 import Header from '../shared/components/Header.jsx'
 import { publishedRecipes } from '../shared/content/recipes'
+import { resolvePublicAsset } from '../shared/utils/assets'
 
 function Recipes() {
-  const [searchParams, setSearchParams] = useSearchParams()
+  const [searchParams] = useSearchParams()
   const [searchTerm, setSearchTerm] = useState(searchParams.get('q') || '')
   const [selectedCategory, setSelectedCategory] = useState('All')
-
-  useEffect(() => {
-    const q = searchParams.get('q')
-    if (q !== null) {
-      setSearchTerm(q)
-    }
-  }, [searchParams])
 
   const categories = useMemo(() => {
     return ['All', ...new Set(publishedRecipes.map((recipe) => recipe.category))]
@@ -97,7 +91,7 @@ function Recipes() {
 function RecipeCard({ recipe }) {
   return (
     <Link className="recipe-card" to={`/recipes/${recipe.slug}`}>
-      <img src={recipe.image} alt="" />
+      <img src={resolvePublicAsset(recipe.image)} alt="" />
       <div className="recipe-card__body">
         <p className="eyebrow">{recipe.category}</p>
         <h2>{recipe.title}</h2>
