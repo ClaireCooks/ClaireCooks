@@ -22,4 +22,4 @@ export default createHashRouter([
       },
     ],
   },
-])
+], { basename: import.meta.env.BASE_URL })
