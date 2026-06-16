@@ -5,9 +5,9 @@
   "description": "Authentic Style North Indian butter chicken",
   "image": "/recipe-art/crepes.svg",
   "category": "Uncategorized",
-  "status": "published",
+  "status": "draft",
   "difficulty": "Easy",
-  "prepTime": "10 min",
+  "prepTime": "15 min",
   "cookTime": "30 min",
   "servings": 4,
   "tags": [
