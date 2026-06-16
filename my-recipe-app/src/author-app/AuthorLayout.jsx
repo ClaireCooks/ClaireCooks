@@ -45,11 +45,11 @@ const AuthorLayout = () => {
         </NavLink>
         <nav className="site-nav">
           <NavLink to="/" end>Dashboard</NavLink>
-          <a href="/">View Live Site &nearr;</a>
+          <a href={import.meta.env.BASE_URL}>View Live Site &nearr;</a>
           <button className="btn" style={{ padding: '8px 16px', fontSize: '12px' }} onClick={logout}>Logout</button>
         </nav>
-
       </header>
+
       
       <main>
         <Outlet />

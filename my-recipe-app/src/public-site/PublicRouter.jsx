@@ -1,11 +1,11 @@
-import { createBrowserRouter } from 'react-router-dom'
+import { createHashRouter } from 'react-router-dom'
 import Navigation from '../shared/components/Navigation.jsx'
 import Home from './Home.jsx'
 import Recipes from './Recipes.jsx'
 import RecipeDetail from './RecipeDetail.jsx'
 import AboutMe from './AboutMe.jsx'
 
-export default createBrowserRouter([
+export default createHashRouter([
   {
     path: '/',
     element: <Navigation />,
@@ -28,4 +28,4 @@ export default createBrowserRouter([
       },
     ],
   },
-])
+], { basename: import.meta.env.BASE_URL })
