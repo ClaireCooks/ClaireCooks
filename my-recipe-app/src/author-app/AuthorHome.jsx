@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { Link } from 'react-router-dom'
 import Header from '../shared/components/Header.jsx'
-import { fetchRecipes } from './services/github'
+import { fetchRecipes, getLiveRecipeUrl, repository } from './services/github'
 
 function AuthorHome() {
   const [recipes, setRecipes] = useState([])
@@ -33,7 +33,7 @@ function AuthorHome() {
       <div style={{ padding: '80px', textAlign: 'center' }}>
         <h2 style={{ color: 'var(--danger)' }}>GitHub Connection Error</h2>
         <p style={{ color: 'var(--text-muted)', marginTop: '16px' }}>{error}</p>
-        <p style={{ marginTop: '24px' }}>Check your Personal Access Token and repository permissions.</p>
+        <p style={{ marginTop: '24px' }}>Check your token permissions for <code>{repository.fullName}</code>.</p>
       </div>
     )
   }
@@ -63,8 +63,15 @@ function AuthorHome() {
                 <span className="category">{recipe.category}</span>
                 <h3>{recipe.title}</h3>
                 <p>{recipe.description}</p>
+                <p style={{ color: 'var(--text-muted)', fontSize: '13px', fontWeight: 700, textTransform: 'uppercase' }}>
+                  {recipe.status}
+                </p>
                 <div className="card-footer">
-                  <a href={`https://clairecooks.github.io/recipes/${recipe.slug}`} target="_blank" rel="noopener noreferrer" className="btn">View Live</a>
+                  {recipe.status === 'published' ? (
+                    <a href={getLiveRecipeUrl(recipe.slug)} target="_blank" rel="noopener noreferrer" className="btn">View Live</a>
+                  ) : (
+                    <button className="btn" type="button" disabled>Draft</button>
+                  )}
                   <Link to={`/edit/${recipe.slug}`} className="btn btn-primary">Edit</Link>
                 </div>
               </div>
@@ -90,7 +97,8 @@ function AuthorHome() {
           <div className="publishing-flow">
             <p>
               This workspace is connected directly to your GitHub repository. Every time you save a recipe, 
-              a new commit is created on the <code>main</code> branch, which may trigger a GitHub Pages redeploy.
+              a new commit is created in <code>{repository.fullName}</code> on the <code>main</code> branch,
+              which may trigger a GitHub Pages redeploy.
             </p>
           </div>
         </article>

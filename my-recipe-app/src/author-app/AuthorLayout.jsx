@@ -1,10 +1,16 @@
 import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAuth } from './useAuth'
+import { repository } from './services/github'
 
 const AuthorLayout = () => {
-  const { isAuthenticated, login, logout } = useAuth()
+  const { isAuthenticated, authError, isAuthenticating, login, logout } = useAuth()
   const [tempToken, setTempToken] = useState('')
+
+  const handleLogin = (event) => {
+    event.preventDefault()
+    login(tempToken)
+  }
 
   if (!isAuthenticated) {
     return (
@@ -13,24 +19,30 @@ const AuthorLayout = () => {
           <div className="author-panel" style={{ maxWidth: '400px', width: '100%' }}>
             <h2>Authenticate</h2>
             <p style={{ color: 'var(--text-muted)', marginBottom: '24px', fontSize: '14px' }}>
-              Enter your GitHub Personal Access Token (PAT) with <code>repo</code> scope to access the CMS.
+              Enter a GitHub token with contents access for <code>{repository.fullName}</code>.
             </p>
-            <div className="field-group">
-              <label>Personal Access Token</label>
-              <input 
-                type="password" 
-                placeholder="ghp_..." 
-                value={tempToken}
-                onChange={(e) => setTempToken(e.target.value)}
-              />
-            </div>
-            <button 
-              className="btn btn-primary" 
-              style={{ width: '100%', marginTop: '24px' }}
-              onClick={() => login(tempToken)}
-            >
-              Unlock Workspace
-            </button>
+            <form onSubmit={handleLogin}>
+              <div className="field-group">
+                <label>GitHub Token</label>
+                <input
+                  type="password"
+                  placeholder="github_pat_..."
+                  value={tempToken}
+                  onChange={(e) => setTempToken(e.target.value)}
+                />
+              </div>
+              {authError ? (
+                <p style={{ color: 'var(--danger)', marginTop: '16px', fontSize: '14px' }}>{authError}</p>
+              ) : null}
+              <button
+                className="btn btn-primary"
+                style={{ width: '100%', marginTop: '24px' }}
+                type="submit"
+                disabled={isAuthenticating}
+              >
+                {isAuthenticating ? 'Checking GitHub...' : 'Unlock Workspace'}
+              </button>
+            </form>
           </div>
         </main>
       </div>
@@ -45,7 +57,7 @@ const AuthorLayout = () => {
         </NavLink>
         <nav className="site-nav">
           <NavLink to="/" end>Dashboard</NavLink>
-          <a href={import.meta.env.BASE_URL}>View Live Site &nearr;</a>
+          <a href={repository.pagesBaseUrl}>View Live Site &nearr;</a>
           <button className="btn" style={{ padding: '8px 16px', fontSize: '12px' }} onClick={logout}>Logout</button>
         </nav>
       </header>

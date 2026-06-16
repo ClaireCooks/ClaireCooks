@@ -31,6 +31,7 @@ jobs:
       - name: Build
         run: |
           cd my-recipe-app
+          npm run validate:recipes
           npm run build
 
       - name: Setup Pages

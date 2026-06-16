@@ -1,13 +1,49 @@
 import { Octokit } from '@octokit/rest'
 
 let octokit = null
-const OWNER = 'TristenAnderson'
+const OWNER = 'ClaireCooks'
 const REPO = 'ClaireCooks'
 const BRANCH = 'main'
 const CONTENT_PATH = 'my-recipe-app/src/shared/content/recipes'
 
 export function setToken(token) {
-  octokit = new Octokit({ auth: token })
+  const normalizedToken = token?.trim()
+  octokit = normalizedToken ? new Octokit({ auth: normalizedToken }) : null
+}
+
+export const repository = {
+  owner: OWNER,
+  repo: REPO,
+  branch: BRANCH,
+  fullName: `${OWNER}/${REPO}`,
+  contentPath: CONTENT_PATH,
+  pagesBaseUrl: `https://${OWNER.toLowerCase()}.github.io/${REPO}/`,
+}
+
+export function getLiveRecipeUrl(slug) {
+  return `${repository.pagesBaseUrl}recipes/${slug}`
+}
+
+export async function verifyRepositoryAccess() {
+  if (!octokit) throw new Error('Not authenticated')
+
+  try {
+    await octokit.repos.get({
+      owner: OWNER,
+      repo: REPO,
+    })
+
+    await octokit.repos.getContent({
+      owner: OWNER,
+      repo: REPO,
+      path: CONTENT_PATH,
+      ref: BRANCH,
+    })
+
+    return true
+  } catch (e) {
+    throw new Error(formatGitHubError(e, `Unable to access ${repository.fullName}.`), { cause: e })
+  }
 }
 
 export async function fetchRecipes() {
@@ -39,7 +75,7 @@ export async function fetchRecipes() {
     return recipes
   } catch (e) {
     console.error('Failed to fetch recipes from GitHub', e)
-    throw e
+    throw new Error(formatGitHubError(e, `Unable to fetch recipes from ${repository.fullName}.`), { cause: e })
   }
 }
 
@@ -78,6 +114,22 @@ export async function commitRecipe(recipe) {
     return true
   } catch (e) {
     console.error('Failed to commit recipe to GitHub', e)
-    throw e
+    throw new Error(formatGitHubError(e, `Unable to commit recipe to ${repository.fullName}.`), { cause: e })
   }
+}
+
+function formatGitHubError(error, fallback) {
+  if (error?.status === 401) {
+    return `${fallback} The GitHub token was rejected.`
+  }
+
+  if (error?.status === 403) {
+    return `${fallback} The token does not have permission for this repository.`
+  }
+
+  if (error?.status === 404) {
+    return `${fallback} Confirm the token can access ${repository.fullName}.`
+  }
+
+  return error?.message ? `${fallback} ${error.message}` : fallback
 }

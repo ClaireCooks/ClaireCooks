@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import RecipeRenderer from '../shared/renderer/RecipeRenderer'
 import { fetchRecipes, commitRecipe } from './services/github'
+import { validateRecipe } from '../shared/content/recipes/schema'
 import { createSlug } from '../shared/utils/slugs'
 
 function createEmptyRecipe() {
@@ -122,18 +123,51 @@ function AuthorEditor() {
     setHasChanges(true)
   }
 
-  const handleSave = async () => {
+  const prepareRecipeForSave = (nextStatus) => ({
+    ...recipe,
+    slug: slug || createSlug(recipe.title),
+    status: nextStatus,
+    tags: (recipe.tags || []).map((tag) => tag.trim()).filter(Boolean),
+    blocks: recipe.blocks.map((block) => {
+      if (['ingredients', 'notes', 'nutrition'].includes(block.type)) {
+        return {
+          ...block,
+          data: {
+            ...block.data,
+            items: (block.data.items || []).map((item) => item.trim()).filter(Boolean),
+          },
+        }
+      }
+
+      if (block.type === 'instructions') {
+        return {
+          ...block,
+          data: {
+            ...block.data,
+            steps: (block.data.steps || []).map((step) => step.trim()).filter(Boolean),
+          },
+        }
+      }
+
+      return block
+    }),
+  })
+
+  const handleSave = async (nextStatus = recipe.status) => {
     setIsSaving(true)
     try {
-      const recipeToSave = {
-        ...recipe,
-        slug: slug || createSlug(recipe.title),
+      const recipeToSave = prepareRecipeForSave(nextStatus)
+      const validation = validateRecipe(recipeToSave)
+
+      if (!validation.valid) {
+        alert(`Recipe is not ready to save:\n\n${validation.errors.join('\n')}`)
+        return
       }
 
       await commitRecipe(recipeToSave)
       setRecipe(recipeToSave)
       setHasChanges(false)
-      alert('Recipe published to GitHub!')
+      alert(recipeToSave.status === 'published' ? 'Recipe published to GitHub!' : 'Draft saved to GitHub!')
       if (!slug) {
         navigate(`/edit/${recipeToSave.slug}`)
       }
@@ -205,6 +239,16 @@ function AuthorEditor() {
                 <option value="Easy">Easy</option>
                 <option value="Intermediate">Intermediate</option>
                 <option value="Advanced">Advanced</option>
+              </select>
+            </div>
+            <div className="field-group">
+              <label>Status</label>
+              <select
+                value={recipe.status}
+                onChange={(e) => updateMetadata('status', e.target.value)}
+              >
+                <option value="draft">Draft</option>
+                <option value="published">Published</option>
               </select>
             </div>
           </div>
@@ -325,8 +369,11 @@ function AuthorEditor() {
         </section>
 
         <footer className="editor-footer" style={{ display: 'grid', gap: '10px' }}>
-          <button className="btn btn-primary" onClick={handleSave} disabled={isSaving}>
-            {isSaving ? 'Publishing to GitHub...' : 'Publish to GitHub'}
+          <button className="btn" onClick={() => handleSave('draft')} disabled={isSaving}>
+            {isSaving ? 'Saving...' : 'Save Draft'}
+          </button>
+          <button className="btn btn-primary" onClick={() => handleSave('published')} disabled={isSaving}>
+            {isSaving ? 'Publishing...' : 'Publish to GitHub'}
           </button>
         </footer>
       </aside>

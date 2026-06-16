@@ -24,7 +24,7 @@ const Footer = () => {
           </div>
           <div className="footer-nav-col">
             <h4>Author</h4>
-            <Link to="/author">Dashboard</Link>
+            <a href={`${import.meta.env.BASE_URL}author.html`}>Dashboard</a>
           </div>
         </nav>
       </div>
