@@ -1,7 +1,7 @@
 import { readdir, readFile } from 'node:fs/promises'
 import { dirname, join } from 'node:path'
 import { fileURLToPath } from 'node:url'
-import { createRecipeIndex } from '../src/content/recipes/schema.js'
+import { createRecipeIndex } from '../src/shared/content/recipes/schema.js'
 
 const appRoot = dirname(dirname(fileURLToPath(import.meta.url)))
 const recipesDir = join(appRoot, 'src', 'content', 'recipes')

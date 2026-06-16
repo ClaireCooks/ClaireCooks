@@ -253,7 +253,7 @@ h3 { font-size: 24px; }
 }
 
 main {
-  max-width: 1280px;
+  max-width: 1600px;
   margin: 0 auto;
   padding: 80px clamp(20px, 5vw, 72px);
 }
@@ -769,7 +769,7 @@ main {
 .preview-content {
   background: #fff;
   width: 100%;
-  max-width: 1000px;
+  max-width: 1400px;
   min-height: 100%;
   padding: 80px;
   border-radius: var(--radius);

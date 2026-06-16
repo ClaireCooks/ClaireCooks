@@ -1,8 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import { getRecipeBySlug } from '../content/recipes'
-import RecipeRenderer from '../renderer/RecipeRenderer'
-import { saveLocalRecipe, exportRecipeAsJSON } from '../utils/storage'
+import RecipeRenderer from '../shared/renderer/RecipeRenderer'
+import { fetchRecipes, commitRecipe } from './services/github'
 
 const EMPTY_RECIPE = {
   id: `recipe-${Date.now()}`,
@@ -45,19 +44,28 @@ function AuthorEditor() {
   const navigate = useNavigate()
   const [recipe, setRecipe] = useState(null)
   const [hasChanges, setHasChanges] = useState(false)
+  const [isSaving, setIsSaving] = useState(false)
+  const [isLoading, setIsLoading] = useState(true)
 
   useEffect(() => {
     if (slug) {
-      const existing = getRecipeBySlug(slug)
-      if (existing) {
-        setRecipe(JSON.parse(JSON.stringify(existing)))
-      }
+      fetchRecipes()
+        .then(all => {
+          const existing = all.find(r => r.slug === slug)
+          if (existing) {
+            setRecipe(existing)
+          }
+          setIsLoading(false)
+        })
+        .catch(() => setIsLoading(false))
     } else {
       setRecipe(JSON.parse(JSON.stringify(EMPTY_RECIPE)))
+      setIsLoading(false)
     }
   }, [slug])
 
-  if (!recipe) return <div>Loading editor...</div>
+  if (isLoading) return <div style={{ padding: '80px', textAlign: 'center' }}><h2>Loading recipe data...</h2></div>
+  if (!recipe) return <div style={{ padding: '80px', textAlign: 'center' }}><h2>Recipe not found.</h2><Link to="/">Back to Dashboard</Link></div>
 
   const updateMetadata = (key, value) => {
     setRecipe((prev) => ({ ...prev, [key]: value }))
@@ -112,25 +120,27 @@ function AuthorEditor() {
     setHasChanges(true)
   }
 
-  const handleSave = () => {
-    saveLocalRecipe(recipe)
-    setHasChanges(false)
-    alert('Recipe saved locally!')
-    // If it was a new recipe, navigate to its new slug
-    if (!slug) {
-      navigate(`/author/edit/${recipe.slug}`)
+  const handleSave = async () => {
+    setIsSaving(true)
+    try {
+      await commitRecipe(recipe)
+      setHasChanges(false)
+      alert('Recipe published to GitHub!')
+      if (!slug) {
+        navigate(`/edit/${recipe.slug}`)
+      }
+    } catch (e) {
+      alert(`Failed to publish: ${e.message}`)
+    } finally {
+      setIsSaving(false)
     }
-  }
-
-  const handleExport = () => {
-    exportRecipeAsJSON(recipe)
   }
 
   return (
     <div className="author-editor-layout">
       <aside className="editor-sidebar">
         <header className="editor-header">
-          <Link to="/author" className="site-nav a">&larr; Dashboard</Link>
+          <Link to="/" className="site-nav a">&larr; Dashboard</Link>
           <h2>Editor</h2>
           {hasChanges && <span style={{ fontSize: '10px', color: 'var(--warm)', fontWeight: 800, marginLeft: 'auto' }}>UNSAVED</span>}
         </header>
@@ -307,11 +317,8 @@ function AuthorEditor() {
         </section>
 
         <footer className="editor-footer" style={{ display: 'grid', gap: '10px' }}>
-          <button className="site-nav a active" onClick={handleSave}>
-            Save to Local Storage
-          </button>
-          <button className="site-nav a" onClick={handleExport}>
-            Download JSON
+          <button className="btn btn-primary" onClick={handleSave} disabled={isSaving}>
+            {isSaving ? 'Publishing to GitHub...' : 'Publish to GitHub'}
           </button>
         </footer>
       </aside>

@@ -1,5 +1,5 @@
-import Header from '../components/Header.jsx'
-import claireImg from '../assets/Claire.jpg'
+import Header from '../shared/components/Header.jsx'
+import claireImg from '../shared/assets/Claire.jpg'
 
 function AboutMe() {
   return (

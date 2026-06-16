@@ -38,7 +38,7 @@ const Navigation = () => {
           <NavLink to="/" end>Home</NavLink>
           <NavLink to="/recipes">Recipes</NavLink>
           <NavLink to="/about">About</NavLink>
-          <NavLink to="/author">Author</NavLink>
+          <a href="/author.html">Author</a>
         </nav>
       </header>
       
