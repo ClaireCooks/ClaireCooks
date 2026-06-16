@@ -1,11 +1,15 @@
 import { useEffect } from 'react'
+import { useState } from 'react'
 import { resolvePublicAsset } from '../../utils/assets'
 
 function MediaBlock({ block }) {
   const { type, url, caption } = block.data
+  const [failedImageUrl, setFailedImageUrl] = useState('')
+  const mediaUrl = url || ''
+  const imageFailed = failedImageUrl === mediaUrl
 
   useEffect(() => {
-    if (type === 'video' && url.includes('tiktok.com')) {
+    if (type === 'video' && mediaUrl.includes('tiktok.com')) {
       const script = document.createElement('script')
       script.src = 'https://www.tiktok.com/embed.js'
       script.async = true
@@ -15,27 +19,38 @@ function MediaBlock({ block }) {
         document.body.removeChild(script)
       }
     }
-  }, [type, url])
+  }, [type, mediaUrl])
 
   return (
     <section className="recipe-section media-block">
       {type === 'image' && (
         <figure className="media-figure">
-          <img src={resolvePublicAsset(url)} alt={caption || ''} className="media-image" />
+          {imageFailed ? (
+            <a href={mediaUrl} target="_blank" rel="noopener noreferrer" className="btn">
+              Open recipe image
+            </a>
+          ) : (
+            <img
+              src={resolvePublicAsset(mediaUrl)}
+              alt={caption || ''}
+              className="media-image"
+              onError={() => setFailedImageUrl(mediaUrl)}
+            />
+          )}
           {caption && <figcaption className="media-caption">{caption}</figcaption>}
         </figure>
       )}
       
-      {type === 'video' && url.includes('tiktok.com') && (
+      {type === 'video' && mediaUrl.includes('tiktok.com') && (
         <div className="media-video-container">
           <blockquote 
             className="tiktok-embed" 
-            cite={url} 
-            data-video-id={url.split('/').pop()}
+            cite={mediaUrl} 
+            data-video-id={mediaUrl.split('/').pop()}
             style={{ maxWidth: '605px', minWidth: '325px' }}
           >
             <section>
-              <a target="_blank" title="TikTok Video" href={url} rel="noreferrer">
+              <a target="_blank" title="TikTok Video" href={mediaUrl} rel="noreferrer">
                 View Video on TikTok
               </a>
             </section>
@@ -44,9 +59,9 @@ function MediaBlock({ block }) {
         </div>
       )}
 
-      {type === 'video' && !url.includes('tiktok.com') && (
+      {type === 'video' && !mediaUrl.includes('tiktok.com') && (
         <div className="media-video-link">
-          <a href={url} target="_blank" rel="noopener noreferrer" className="btn">
+          <a href={mediaUrl} target="_blank" rel="noopener noreferrer" className="btn">
             Watch Video
           </a>
           {caption && <p className="media-caption">{caption}</p>}
