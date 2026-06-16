@@ -44,7 +44,7 @@ function Home() {
       <section className="home-about-snapshot">
         <div className="snapshot-grid">
           <div className="snapshot-image">
-            <img src={claireImg} alt="Claire" style={{ width: '100%', height: '600px', objectFit: 'cover', borderRadius: 'var(--radius)' }} />
+            <img src={claireImg} alt="Claire" />
           </div>
           <div className="snapshot-content">
             <p className="eyebrow">Meet the Author</p>

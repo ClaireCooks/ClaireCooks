@@ -8,7 +8,7 @@ function AboutMe() {
       
       <div className="about-layout">
         <div className="about-image-large">
-          <img src={claireImg} alt="Claire" style={{ width: '100%', height: '800px', objectFit: 'cover', borderRadius: 'var(--radius)', position: 'sticky', top: '120px' }} />
+          <img src={claireImg} alt="Claire" />
         </div>
         
         <div className="about-content-rich">

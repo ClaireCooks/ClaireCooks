@@ -4,6 +4,20 @@ import RecipeRenderer from '../shared/renderer/RecipeRenderer'
 import { fetchRecipes, commitRecipe } from './services/github'
 import { validateRecipe } from '../shared/content/recipes/schema'
 import { createSlug } from '../shared/utils/slugs'
+import { resolvePublicAsset } from '../shared/utils/assets'
+
+const CATEGORY_OPTIONS = [
+  'Breakfast',
+  'Brunch',
+  'Lunch',
+  'Dinner',
+  'Dessert',
+  'Snack',
+  'Appetizer',
+  'Side Dish',
+  'Drink',
+  'Uncategorized',
+]
 
 function createEmptyRecipe() {
   return {
@@ -127,6 +141,8 @@ function AuthorEditor() {
     ...recipe,
     slug: slug || createSlug(recipe.title),
     status: nextStatus,
+    category: recipe.category.trim(),
+    image: recipe.image.trim(),
     tags: (recipe.tags || []).map((tag) => tag.trim()).filter(Boolean),
     blocks: recipe.blocks.map((block) => {
       if (['ingredients', 'notes', 'nutrition'].includes(block.type)) {
@@ -203,6 +219,39 @@ function AuthorEditor() {
               value={recipe.description}
               onChange={(e) => updateMetadata('description', e.target.value)}
             />
+          </div>
+
+          <div className="field-group">
+            <label>Recipe Card Thumbnail</label>
+            <input
+              type="text"
+              placeholder="/recipe-art/crepes.svg or https://..."
+              value={recipe.image}
+              onChange={(e) => updateMetadata('image', e.target.value)}
+            />
+            {recipe.image ? (
+              <img
+                src={resolvePublicAsset(recipe.image)}
+                alt=""
+                style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: 'var(--radius-sm)', border: '1px solid var(--line)', marginTop: '10px' }}
+              />
+            ) : null}
+          </div>
+
+          <div className="field-group">
+            <label>Category</label>
+            <input
+              type="text"
+              list="recipe-category-options"
+              placeholder="Dinner, Lunch, Dessert..."
+              value={recipe.category}
+              onChange={(e) => updateMetadata('category', e.target.value)}
+            />
+            <datalist id="recipe-category-options">
+              {CATEGORY_OPTIONS.map((category) => (
+                <option value={category} key={category} />
+              ))}
+            </datalist>
           </div>
 
           <div className="field-group-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
