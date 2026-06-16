@@ -1,0 +1,70 @@
+{
+  "id": "recipe-1781584289865",
+  "title": "Murgh Makhani",
+  "slug": "new-recipe",
+  "description": "Authentic Style North Indian butter chicken",
+  "image": "/recipe-art/crepes.svg",
+  "category": "Uncategorized",
+  "status": "draft",
+  "difficulty": "Easy",
+  "prepTime": "10 min",
+  "cookTime": "30 min",
+  "servings": 4,
+  "tags": [
+    "Dinner",
+    "Easy"
+  ],
+  "blocks": [
+    {
+      "type": "hero",
+      "data": {
+        "kicker": "Dinner",
+        "summary": "Yogurt marinated chicken with a buttery tomato sauce",
+        "backgroundImage": "https://1drv.ms/i/c/453dc263ab1fb587/IQRsn5nBLM0USpfs8jvfouR9AcIPOOsjnbjWscJPN4SXVHs?width=4271&height=5095"
+      }
+    },
+    {
+      "type": "ingredients",
+      "data": {
+        "items": [
+          "2 tablespoons butter",
+          "1 tablespoon neural oil",
+          "1 medium onion",
+          "4 garlic cloves",
+          "1 can tomatoes",
+          "1 teaspoon paprika",
+          "1 teaspoon garam masala",
+          "1/2 teaspoon cumin",
+          "2 teaspoon salt",
+          "1 tablespoon sugar",
+          "1/2 cup heavy cream",
+          "fresh cilantro",
+          ""
+        ]
+      }
+    },
+    {
+      "type": "instructions",
+      "data": {
+        "steps": [
+          "Heat butter and oil",
+          "Cook onion until soft, about 8 minutes",
+          "Add garlic and cook until fragrant",
+          "Add tomatoes and seasoning",
+          "Simmer 15-20 minutes",
+          "Add in chicken and heavy cream",
+          "Simmer 10-15 minutes more",
+          "Serve and garnish with cilantro and cream"
+        ]
+      }
+    },
+    {
+      "type": "media",
+      "data": {
+        "type": "image",
+        "url": "https://1drv.ms/i/c/453dc263ab1fb587/IQRr2-4d4sXmQZ5RlQTT7DRXAZAW32Zt_RkZmFRiUlwxP6o?width=4284&height=5712",
+        "caption": ""
+      }
+    }
+  ]
+}
