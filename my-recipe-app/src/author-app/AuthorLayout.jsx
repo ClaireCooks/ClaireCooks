@@ -2,6 +2,7 @@ import { useState } from 'react'
 import { NavLink, Outlet } from 'react-router-dom'
 import { useAuth } from './useAuth'
 import { repository } from './services/github'
+import ScrollToTop from '../shared/components/ScrollToTop.jsx'
 
 const AuthorLayout = () => {
   const { isAuthenticated, authError, isAuthenticating, login, logout } = useAuth()
@@ -51,6 +52,7 @@ const AuthorLayout = () => {
 
   return (
     <div className="site-layout author-app">
+      <ScrollToTop />
       <header className="site-header">
         <NavLink className="brand" to="/">
           Claire Cooks <span style={{ fontSize: '12px', opacity: 0.5, marginLeft: '8px' }}>CMS</span>

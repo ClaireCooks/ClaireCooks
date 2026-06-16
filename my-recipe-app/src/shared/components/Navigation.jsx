@@ -1,6 +1,7 @@
 import { useState } from 'react'
 import { NavLink, Outlet, useNavigate, useLocation } from 'react-router-dom'
 import Footer from './Footer.jsx'
+import ScrollToTop from './ScrollToTop.jsx'
 
 const Navigation = () => {
   const [query, setQuery] = useState('')
@@ -20,6 +21,7 @@ const Navigation = () => {
 
   return (
     <div className="site-layout">
+      <ScrollToTop />
       <header className="site-header">
         <NavLink className="brand" to="/">
           Claire Cooks

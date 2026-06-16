@@ -5,6 +5,7 @@ const OWNER = 'ClaireCooks'
 const REPO = 'ClaireCooks'
 const BRANCH = 'main'
 const CONTENT_PATH = 'my-recipe-app/src/shared/content/recipes'
+const SITE_BASE_PATH = import.meta.env.BASE_URL || '/'
 
 export function setToken(token) {
   const normalizedToken = token?.trim()
@@ -17,7 +18,7 @@ export const repository = {
   branch: BRANCH,
   fullName: `${OWNER}/${REPO}`,
   contentPath: CONTENT_PATH,
-  pagesBaseUrl: `https://${OWNER.toLowerCase()}.github.io/${REPO}/`,
+  pagesBaseUrl: SITE_BASE_PATH,
 }
 
 export function getLiveRecipeUrl(slug) {
