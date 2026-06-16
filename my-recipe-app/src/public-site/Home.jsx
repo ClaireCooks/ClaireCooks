@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
-import { publishedRecipes } from '../content/recipes'
-import claireImg from '../assets/Claire.jpg'
+import { publishedRecipes } from '../shared/content/recipes'
+import claireImg from '../shared/assets/Claire.jpg'
 
 function Home() {
   const recentRecipes = publishedRecipes.slice(0, 3)

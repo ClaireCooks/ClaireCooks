@@ -1,7 +1,7 @@
 import { useMemo, useState, useEffect } from 'react'
 import { Link, useSearchParams } from 'react-router-dom'
-import Header from '../components/Header.jsx'
-import { publishedRecipes } from '../content/recipes'
+import Header from '../shared/components/Header.jsx'
+import { publishedRecipes } from '../shared/content/recipes'
 
 function Recipes() {
   const [searchParams, setSearchParams] = useSearchParams()

@@ -1,6 +1,6 @@
 import { Link, useParams } from 'react-router-dom'
-import { getPublishedRecipeBySlug } from '../content/recipes'
-import RecipeRenderer from '../renderer/RecipeRenderer'
+import { getPublishedRecipeBySlug } from '../shared/content/recipes'
+import RecipeRenderer from '../shared/renderer/RecipeRenderer'
 
 function RecipeDetail() {
   const { slug } = useParams()
