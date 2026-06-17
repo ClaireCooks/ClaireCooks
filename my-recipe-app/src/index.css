@@ -83,9 +83,9 @@ h3 { font-size: 24px; }
 /* Layout */
 .site-header {
   min-height: 80px;
-  display: flex;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
   align-items: center;
-  justify-content: space-between;
   gap: 16px;
   padding: 0 clamp(20px, 5vw, 72px);
   background: rgba(255, 255, 255, 0.8);
@@ -102,10 +102,7 @@ h3 { font-size: 24px; }
 }
 
 .header-collapsible {
-  display: flex;
-  align-items: center;
-  flex: 1;
-  justify-content: space-between;
+  display: contents;
 }
 
 .menu-toggle {
@@ -118,9 +115,9 @@ h3 { font-size: 24px; }
 }
 
 .nav-search {
-  flex: 1;
+  grid-column: 2;
+  width: 100%;
   max-width: 400px;
-  margin: 0 40px;
 }
 
 .nav-search input {
