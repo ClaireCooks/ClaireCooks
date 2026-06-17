@@ -18,9 +18,8 @@ const Footer = () => {
           </div>
           <div className="footer-nav-col">
             <h4>Connect</h4>
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer">Instagram</a>
-            <a href="https://tiktok.com" target="_blank" rel="noopener noreferrer">TikTok</a>
-            <a href="https://youtube.com" target="_blank" rel="noopener noreferrer">YouTube</a>
+            <a href="https://www.instagram.com/claire_stone19/" target="_blank" rel="noopener noreferrer">Instagram</a>
+            <a href="https://www.tiktok.com/@claire_stone19" target="_blank" rel="noopener noreferrer">TikTok</a>
           </div>
           <div className="footer-nav-col">
             <h4>Author</h4>

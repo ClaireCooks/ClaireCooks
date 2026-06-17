@@ -5,6 +5,7 @@ import ScrollToTop from './ScrollToTop.jsx'
 
 const Navigation = () => {
   const [query, setQuery] = useState('')
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
   const navigate = useNavigate()
   const location = useLocation()
 
@@ -16,6 +17,7 @@ const Navigation = () => {
     if (query.trim()) {
       navigate(`/recipes?q=${encodeURIComponent(query.trim())}`)
       setQuery('')
+      setIsMenuOpen(false)
     }
   }
 
@@ -23,25 +25,38 @@ const Navigation = () => {
     <div className="site-layout">
       <ScrollToTop />
       <header className="site-header">
-        <NavLink className="brand" to="/">
-          Claire Cooks
-        </NavLink>
+        <div className="header-main">
+          <NavLink className="brand" to="/" onClick={() => setIsMenuOpen(false)}>
+            Claire Cooks
+          </NavLink>
+          
+          <button 
+            className="menu-toggle" 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-expanded={isMenuOpen}
+            aria-label="Toggle menu"
+          >
+            <span className={`hamburger ${isMenuOpen ? 'open' : ''}`}></span>
+          </button>
+        </div>
         
-        <form className="nav-search" onSubmit={handleSearch}>
-          <input 
-            type="text" 
-            placeholder="Search recipes..." 
-            value={query}
-            onChange={(e) => setQuery(e.target.value)}
-          />
-        </form>
+        <div className={`header-collapsible ${isMenuOpen ? 'is-open' : ''}`}>
+          <form className="nav-search" onSubmit={handleSearch}>
+            <input 
+              type="text" 
+              placeholder="Search recipes..." 
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+            />
+          </form>
 
-        <nav className="site-nav" aria-label="Primary navigation">
-          <NavLink to="/" end>Home</NavLink>
-          <NavLink to="/recipes">Recipes</NavLink>
-          <NavLink to="/about">About</NavLink>
-          <a href={`${import.meta.env.BASE_URL}author.html`}>Author</a>
-        </nav>
+          <nav className="site-nav" aria-label="Primary navigation">
+            <NavLink to="/" end onClick={() => setIsMenuOpen(false)}>Home</NavLink>
+            <NavLink to="/recipes" onClick={() => setIsMenuOpen(false)}>Recipes</NavLink>
+            <NavLink to="/about" onClick={() => setIsMenuOpen(false)}>About</NavLink>
+            <a href={`${import.meta.env.BASE_URL}author.html`} onClick={() => setIsMenuOpen(false)}>Author</a>
+          </nav>
+        </div>
       </header>
       
       <main>

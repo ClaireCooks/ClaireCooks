@@ -7,6 +7,7 @@ import ScrollToTop from '../shared/components/ScrollToTop.jsx'
 const AuthorLayout = () => {
   const { isAuthenticated, authError, isAuthenticating, login, logout } = useAuth()
   const [tempToken, setTempToken] = useState('')
+  const [isMenuOpen, setIsMenuOpen] = useState(false)
 
   const handleLogin = (event) => {
     event.preventDefault()
@@ -54,14 +55,28 @@ const AuthorLayout = () => {
     <div className="site-layout author-app">
       <ScrollToTop />
       <header className="site-header">
-        <NavLink className="brand" to="/">
-          Claire Cooks <span style={{ fontSize: '12px', opacity: 0.5, marginLeft: '8px' }}>CMS</span>
-        </NavLink>
-        <nav className="site-nav">
-          <NavLink to="/" end>Dashboard</NavLink>
-          <a href={repository.pagesBaseUrl}>View Live Site &nearr;</a>
-          <button className="btn" style={{ padding: '8px 16px', fontSize: '12px' }} onClick={logout}>Logout</button>
-        </nav>
+        <div className="header-main">
+          <NavLink className="brand" to="/" onClick={() => setIsMenuOpen(false)}>
+            Claire Cooks <span style={{ fontSize: '12px', opacity: 0.5, marginLeft: '8px' }}>CMS</span>
+          </NavLink>
+          
+          <button 
+            className="menu-toggle" 
+            onClick={() => setIsMenuOpen(!isMenuOpen)}
+            aria-expanded={isMenuOpen}
+            aria-label="Toggle menu"
+          >
+            <span className={`hamburger ${isMenuOpen ? 'open' : ''}`}></span>
+          </button>
+        </div>
+
+        <div className={`header-collapsible ${isMenuOpen ? 'is-open' : ''}`}>
+          <nav className="site-nav">
+            <NavLink to="/" end onClick={() => setIsMenuOpen(false)}>Dashboard</NavLink>
+            <a href={repository.pagesBaseUrl} onClick={() => setIsMenuOpen(false)}>View Live Site &nearr;</a>
+            <button className="btn" style={{ padding: '8px 16px', fontSize: '12px' }} onClick={() => { logout(); setIsMenuOpen(false); }}>Logout</button>
+          </nav>
+        </div>
       </header>
 
       
