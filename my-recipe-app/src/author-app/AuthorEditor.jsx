@@ -1,6 +1,5 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
-import RecipeRenderer from '../shared/renderer/RecipeRenderer'
 import { fetchRecipes, commitRecipe } from './services/github'
 import { validateRecipe } from '../shared/content/recipes/schema'
 import { createSlug } from '../shared/utils/slugs'
@@ -196,48 +195,209 @@ function AuthorEditor() {
 
   return (
     <div className="author-editor-layout">
-      <aside className="editor-sidebar">
-        <header className="editor-header">
-          <Link to="/" className="site-nav a">&larr; Dashboard</Link>
-          <h2>Editor</h2>
-          {hasChanges && <span style={{ fontSize: '10px', color: 'var(--warm)', fontWeight: 800, marginLeft: 'auto' }}>UNSAVED</span>}
+      <aside className="editor-rail">
+        <Link to="/" className="rail-back">Back</Link>
+        <div className="rail-brand">
+          <span>Claire Cooks</span>
+          <strong>Recipe Studio</strong>
+        </div>
+
+        <nav className="rail-section" aria-label="Recipe sections">
+          <p>Sections</p>
+          <a href="#recipe-basics">Basics</a>
+          <a href="#recipe-blocks">Content</a>
+          <a href="#recipe-publish">Publish</a>
+        </nav>
+
+        <div className="rail-section">
+          <p>Add Block</p>
+          {['hero', 'media', 'ingredients', 'instructions', 'notes', 'nutrition'].map((type) => (
+            <button key={type} type="button" onClick={() => addBlock(type)}>
+              {type}
+            </button>
+          ))}
+        </div>
+      </aside>
+
+      <main className="recipe-workspace">
+        <header className="recipe-studio-topbar">
+          <div>
+            <p className="eyebrow">Authoring</p>
+            <h1>{recipe.title || 'Untitled Recipe'}</h1>
+          </div>
+          {hasChanges ? <span className="editor-status">Unsaved</span> : <span className="editor-status is-saved">Saved</span>}
         </header>
 
-        <section className="editor-fields">
-          <div className="field-group">
-            <label>Recipe Title</label>
-            <input
-              type="text"
-              value={recipe.title}
-              onChange={(e) => updateMetadata('title', e.target.value)}
-            />
-          </div>
+        <article className="recipe-paper">
+          <section className="recipe-paper-hero" id="recipe-basics">
+            <div className="recipe-paper-copy">
+              <div className="field-group field-group-title">
+                <label>Recipe Title</label>
+                <input
+                  type="text"
+                  value={recipe.title}
+                  onChange={(e) => updateMetadata('title', e.target.value)}
+                />
+              </div>
 
-          <div className="field-group">
-            <label>Description</label>
-            <textarea
-              value={recipe.description}
-              onChange={(e) => updateMetadata('description', e.target.value)}
-            />
-          </div>
+              <div className="field-group">
+                <label>Description</label>
+                <textarea
+                  value={recipe.description}
+                  onChange={(e) => updateMetadata('description', e.target.value)}
+                />
+              </div>
+            </div>
 
+            <div className="recipe-paper-image">
+              {recipe.image ? <img src={resolvePublicAsset(recipe.image)} alt="" /> : null}
+              <span>{recipe.category}</span>
+            </div>
+          </section>
+
+          <section className="recipe-quick-fields">
+            <div className="field-group">
+              <label>Prep</label>
+              <input type="text" value={recipe.prepTime} onChange={(e) => updateMetadata('prepTime', e.target.value)} />
+            </div>
+            <div className="field-group">
+              <label>Cook</label>
+              <input type="text" value={recipe.cookTime} onChange={(e) => updateMetadata('cookTime', e.target.value)} />
+            </div>
+            <div className="field-group">
+              <label>Serves</label>
+              <input type="number" value={recipe.servings} onChange={(e) => updateMetadata('servings', parseInt(e.target.value) || 0)} />
+            </div>
+            <div className="field-group">
+              <label>Difficulty</label>
+              <select value={recipe.difficulty} onChange={(e) => updateMetadata('difficulty', e.target.value)}>
+                <option value="Easy">Easy</option>
+                <option value="Intermediate">Intermediate</option>
+                <option value="Advanced">Advanced</option>
+              </select>
+            </div>
+          </section>
+
+          <section className="recipe-blocks-panel" id="recipe-blocks">
+            <div className="recipe-section-heading">
+              <p className="eyebrow">Recipe Content</p>
+              <h2>Build the cooking flow</h2>
+            </div>
+
+            {recipe.blocks.map((block, index) => (
+              <div key={index} className="block-editor-item">
+                <div className="block-editor-header">
+                  <div>
+                    <span>{String(index + 1).padStart(2, '0')}</span>
+                    <h3>{block.type}</h3>
+                  </div>
+                  <div className="block-editor-actions">
+                    <button className="tool-btn" type="button" onClick={() => moveBlock(index, -1)} disabled={index === 0}>Up</button>
+                    <button className="tool-btn" type="button" onClick={() => moveBlock(index, 1)} disabled={index === recipe.blocks.length - 1}>Down</button>
+                    <button className="tool-btn danger" type="button" onClick={() => removeBlock(index)}>Remove</button>
+                  </div>
+                </div>
+
+                {block.type === 'hero' && (
+                  <div className="block-field-grid">
+                    <div className="field-group">
+                      <label>Kicker</label>
+                      <input
+                        type="text"
+                        value={block.data.kicker}
+                        onChange={(e) => updateBlockData(index, { ...block.data, kicker: e.target.value })}
+                      />
+                    </div>
+                    <div className="field-group">
+                      <label>Background Image URL</label>
+                      <input
+                        type="text"
+                        placeholder="https://..."
+                        value={block.data.backgroundImage || ''}
+                        onChange={(e) => updateBlockData(index, { ...block.data, backgroundImage: e.target.value })}
+                      />
+                    </div>
+                    <div className="field-group block-field-wide">
+                      <label>Summary</label>
+                      <textarea
+                        value={block.data.summary}
+                        onChange={(e) => updateBlockData(index, { ...block.data, summary: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {block.type === 'media' && (
+                  <div className="block-field-grid">
+                    <div className="field-group">
+                      <label>Type</label>
+                      <select value={block.data.type} onChange={(e) => updateBlockData(index, { ...block.data, type: e.target.value })}>
+                        <option value="image">Image</option>
+                        <option value="video">Video</option>
+                      </select>
+                    </div>
+                    <div className="field-group">
+                      <label>Caption</label>
+                      <input type="text" value={block.data.caption} onChange={(e) => updateBlockData(index, { ...block.data, caption: e.target.value })} />
+                    </div>
+                    <div className="field-group block-field-wide">
+                      <label>URL</label>
+                      <input type="text" placeholder="https://..." value={block.data.url} onChange={(e) => updateBlockData(index, { ...block.data, url: e.target.value })} />
+                    </div>
+                  </div>
+                )}
+
+                {(block.type === 'ingredients' || block.type === 'instructions' || block.type === 'notes' || block.type === 'nutrition') && (
+                  <div className="field-group">
+                    <label>{block.type === 'instructions' ? 'Steps' : 'Items'} (one per line)</label>
+                    <textarea
+                      value={(block.data.items || block.data.steps || []).join('\n')}
+                      onChange={(e) => {
+                        const lines = e.target.value.split('\n')
+                        const key = block.type === 'instructions' ? 'steps' : 'items'
+                        updateBlockData(index, { ...block.data, [key]: lines })
+                      }}
+                    />
+                  </div>
+                )}
+              </div>
+            ))}
+          </section>
+        </article>
+      </main>
+
+      <aside className="recipe-inspector" id="recipe-publish">
+        <section className="inspector-card">
+          <h2>Publishing</h2>
           <div className="field-group">
-            <label>Recipe Card Thumbnail</label>
+            <label>Status</label>
+            <select value={recipe.status} onChange={(e) => updateMetadata('status', e.target.value)}>
+              <option value="draft">Draft</option>
+              <option value="published">Published</option>
+            </select>
+          </div>
+          <button className="btn" type="button" onClick={() => handleSave('draft')} disabled={isSaving}>
+            {isSaving ? 'Saving...' : 'Save Draft'}
+          </button>
+          <button className="btn btn-primary" type="button" onClick={() => handleSave('published')} disabled={isSaving}>
+            {isSaving ? 'Publishing...' : 'Publish'}
+          </button>
+        </section>
+
+        <section className="inspector-card">
+          <h2>Recipe Card</h2>
+          <div className="field-group">
+            <label>Thumbnail URL</label>
             <input
               type="text"
               placeholder="/recipe-art/crepes.svg or https://..."
               value={recipe.image}
               onChange={(e) => updateMetadata('image', e.target.value)}
             />
-            {recipe.image ? (
-              <img
-                src={resolvePublicAsset(recipe.image)}
-                alt=""
-                style={{ width: '100%', height: '140px', objectFit: 'cover', borderRadius: 'var(--radius-sm)', border: '1px solid var(--line)', marginTop: '10px' }}
-              />
-            ) : null}
           </div>
-
+          <div className="inspector-thumbnail">
+            {recipe.image ? <img src={resolvePublicAsset(recipe.image)} alt="" /> : null}
+          </div>
           <div className="field-group">
             <label>Category</label>
             <input
@@ -253,186 +413,16 @@ function AuthorEditor() {
               ))}
             </datalist>
           </div>
-
-          <div className="field-group-grid" style={{ display: 'grid', gridTemplateColumns: '1fr 1fr', gap: '16px' }}>
-            <div className="field-group">
-              <label>Prep Time</label>
-              <input
-                type="text"
-                value={recipe.prepTime}
-                onChange={(e) => updateMetadata('prepTime', e.target.value)}
-              />
-            </div>
-            <div className="field-group">
-              <label>Cook Time</label>
-              <input
-                type="text"
-                value={recipe.cookTime}
-                onChange={(e) => updateMetadata('cookTime', e.target.value)}
-              />
-            </div>
-            <div className="field-group">
-              <label>Servings</label>
-              <input
-                type="number"
-                value={recipe.servings}
-                onChange={(e) => updateMetadata('servings', parseInt(e.target.value) || 0)}
-              />
-            </div>
-            <div className="field-group">
-              <label>Difficulty</label>
-              <select
-                value={recipe.difficulty}
-                onChange={(e) => updateMetadata('difficulty', e.target.value)}
-              >
-                <option value="Easy">Easy</option>
-                <option value="Intermediate">Intermediate</option>
-                <option value="Advanced">Advanced</option>
-              </select>
-            </div>
-            <div className="field-group">
-              <label>Status</label>
-              <select
-                value={recipe.status}
-                onChange={(e) => updateMetadata('status', e.target.value)}
-              >
-                <option value="draft">Draft</option>
-                <option value="published">Published</option>
-              </select>
-            </div>
-          </div>
-
           <div className="field-group">
-            <label>Tags (comma separated)</label>
+            <label>Tags</label>
             <input
               type="text"
               value={(recipe.tags || []).join(', ')}
               onChange={(e) => updateMetadata('tags', e.target.value.split(',').map(s => s.trim()))}
             />
           </div>
-
-          <hr />
-
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-            <h3 style={{ margin: 0 }}>Content Blocks</h3>
-            <div className="palette-dropdown">
-              <button className="btn btn-primary" style={{ fontSize: '12px' }}>+ Add Block</button>
-              <div className="palette-menu">
-                <button onClick={() => addBlock('hero')}>Hero</button>
-                <button onClick={() => addBlock('media')}>Media (Image/Video)</button>
-                <button onClick={() => addBlock('ingredients')}>Ingredients</button>
-                <button onClick={() => addBlock('instructions')}>Instructions</button>
-                <button onClick={() => addBlock('notes')}>Notes</button>
-                <button onClick={() => addBlock('nutrition')}>Nutrition</button>
-              </div>
-            </div>
-          </div>
-
-          {recipe.blocks.map((block, index) => (
-            <div key={index} className="block-editor-item">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-                <h4>{block.type.toUpperCase()}</h4>
-                <div style={{ display: 'flex', gap: '4px' }}>
-                  <button className="tool-btn" onClick={() => moveBlock(index, -1)} disabled={index === 0}>&uarr;</button>
-                  <button className="tool-btn" onClick={() => moveBlock(index, 1)} disabled={index === recipe.blocks.length - 1}>&darr;</button>
-                  <button className="tool-btn danger" onClick={() => removeBlock(index)}>X</button>
-                </div>
-              </div>
-
-              {block.type === 'hero' && (
-                <div className="field-group">
-                  <label>Kicker</label>
-                  <input
-                    type="text"
-                    value={block.data.kicker}
-                    onChange={(e) =>
-                      updateBlockData(index, { ...block.data, kicker: e.target.value })
-                    }
-                  />
-                  <label>Summary</label>
-                  <textarea
-                    value={block.data.summary}
-                    onChange={(e) =>
-                      updateBlockData(index, { ...block.data, summary: e.target.value })
-                    }
-                  />
-                  <label>Background Image URL</label>
-                  <input
-                    type="text"
-                    placeholder="https://..."
-                    value={block.data.backgroundImage || ''}
-                    onChange={(e) =>
-                      updateBlockData(index, { ...block.data, backgroundImage: e.target.value })
-                    }
-                  />
-                </div>
-              )}
-
-              {block.type === 'media' && (
-                <div className="field-group">
-                  <label>Type</label>
-                  <select 
-                    value={block.data.type} 
-                    onChange={(e) => updateBlockData(index, { ...block.data, type: e.target.value })}
-                  >
-                    <option value="image">Image</option>
-                    <option value="video">Video (Link/TikTok)</option>
-                  </select>
-                  <label>URL</label>
-                  <input
-                    type="text"
-                    placeholder="https://..."
-                    value={block.data.url}
-                    onChange={(e) =>
-                      updateBlockData(index, { ...block.data, url: e.target.value })
-                    }
-                  />
-                  <label>Caption</label>
-                  <input
-                    type="text"
-                    value={block.data.caption}
-                    onChange={(e) =>
-                      updateBlockData(index, { ...block.data, caption: e.target.value })
-                    }
-                  />
-                </div>
-              )}
-              {(block.type === 'ingredients' || block.type === 'instructions' || block.type === 'notes' || block.type === 'nutrition') && (
-                <div className="field-group">
-                  <label>{block.type === 'instructions' ? 'Steps' : 'Items'} (one per line)</label>
-                  <textarea
-                    value={(block.data.items || block.data.steps || []).join('\n')}
-                    onChange={(e) => {
-                      const lines = e.target.value.split('\n')
-                      const key = block.type === 'instructions' ? 'steps' : 'items'
-                      updateBlockData(index, {
-                        ...block.data,
-                        [key]: lines,
-                      })
-                    }}
-                  />
-                </div>
-              )}
-            </div>
-          ))}
         </section>
-
-        <footer className="editor-footer" style={{ display: 'grid', gap: '10px' }}>
-          <button className="btn" onClick={() => handleSave('draft')} disabled={isSaving}>
-            {isSaving ? 'Saving...' : 'Save Draft'}
-          </button>
-          <button className="btn btn-primary" onClick={() => handleSave('published')} disabled={isSaving}>
-            {isSaving ? 'Publishing...' : 'Publish to GitHub'}
-          </button>
-        </footer>
       </aside>
-
-      <main className="editor-preview">
-        <div className="preview-label">Live Preview</div>
-        <div className="preview-content">
-          <RecipeRenderer recipe={recipe} />
-        </div>
-      </main>
     </div>
   )
 }
