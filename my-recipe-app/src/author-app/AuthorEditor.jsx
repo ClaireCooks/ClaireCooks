@@ -91,11 +91,12 @@ function AuthorEditor() {
   const addBlock = (type) => {
     const defaultData = {
       hero: { kicker: 'New Section', summary: 'Summary text', backgroundImage: '' },
-      ingredients: { items: ['New ingredient'] },
+      ingredients: { items: ['New ingredient'], image: '' },
       instructions: { steps: ['New step'] },
       notes: { items: ['New note'] },
       nutrition: { items: ['New info'] },
       media: { type: 'image', url: '', caption: '' },
+      gallery: { images: [''], caption: '' },
     }
 
     setRecipe((prev) => ({
@@ -150,6 +151,7 @@ function AuthorEditor() {
           data: {
             ...block.data,
             items: (block.data.items || []).map((item) => item.trim()).filter(Boolean),
+            image: block.data.image?.trim() || '',
           },
         }
       }
@@ -164,9 +166,24 @@ function AuthorEditor() {
         }
       }
 
+      if (block.type === 'gallery') {
+        return {
+          ...block,
+          data: {
+            ...block.data,
+            images: (block.data.images || []).map((image) => image.trim()).filter(Boolean),
+            caption: block.data.caption?.trim() || '',
+          },
+        }
+      }
+
       return block
     }),
   })
+
+  const scrollToSection = (id) => {
+    document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
 
   const handleSave = async (nextStatus = recipe.status) => {
     setIsSaving(true)
@@ -204,14 +221,14 @@ function AuthorEditor() {
 
         <nav className="rail-section" aria-label="Recipe sections">
           <p>Sections</p>
-          <a href="#recipe-basics">Basics</a>
-          <a href="#recipe-blocks">Content</a>
-          <a href="#recipe-publish">Publish</a>
+          <button type="button" onClick={() => scrollToSection('recipe-basics')}>Basics</button>
+          <button type="button" onClick={() => scrollToSection('recipe-blocks')}>Content</button>
+          <button type="button" onClick={() => scrollToSection('recipe-publish')}>Publish</button>
         </nav>
 
         <div className="rail-section">
           <p>Add Block</p>
-          {['hero', 'media', 'ingredients', 'instructions', 'notes', 'nutrition'].map((type) => (
+          {['hero', 'media', 'gallery', 'ingredients', 'instructions', 'notes', 'nutrition'].map((type) => (
             <button key={type} type="button" onClick={() => addBlock(type)}>
               {type}
             </button>
@@ -250,7 +267,7 @@ function AuthorEditor() {
             </div>
 
             <div className="recipe-paper-image">
-              {recipe.image ? <img src={resolvePublicAsset(recipe.image)} alt="" /> : null}
+              {recipe.image ? <img src={resolvePublicAsset(recipe.image)} alt="" loading="eager" decoding="async" /> : null}
               <span>{recipe.category}</span>
             </div>
           </section>
@@ -309,7 +326,7 @@ function AuthorEditor() {
                       />
                     </div>
                     <div className="field-group">
-                      <label>Background Image URL</label>
+                      <label>Hero Side Photo URL</label>
                       <input
                         type="text"
                         placeholder="https://..."
@@ -347,7 +364,48 @@ function AuthorEditor() {
                   </div>
                 )}
 
-                {(block.type === 'ingredients' || block.type === 'instructions' || block.type === 'notes' || block.type === 'nutrition') && (
+                {block.type === 'gallery' && (
+                  <div className="block-field-grid">
+                    <div className="field-group block-field-wide">
+                      <label>Photo URLs (one per line)</label>
+                      <textarea
+                        value={(block.data.images || []).join('\n')}
+                        onChange={(e) => updateBlockData(index, { ...block.data, images: e.target.value.split('\n') })}
+                      />
+                    </div>
+                    <div className="field-group block-field-wide">
+                      <label>Caption</label>
+                      <input
+                        type="text"
+                        value={block.data.caption || ''}
+                        onChange={(e) => updateBlockData(index, { ...block.data, caption: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {block.type === 'ingredients' && (
+                  <div className="block-field-grid">
+                    <div className="field-group block-field-wide">
+                      <label>Items (one per line)</label>
+                      <textarea
+                        value={(block.data.items || []).join('\n')}
+                        onChange={(e) => updateBlockData(index, { ...block.data, items: e.target.value.split('\n') })}
+                      />
+                    </div>
+                    <div className="field-group block-field-wide">
+                      <label>Side Photo URL</label>
+                      <input
+                        type="text"
+                        placeholder="/recipe-art/crepes.svg or https://..."
+                        value={block.data.image || ''}
+                        onChange={(e) => updateBlockData(index, { ...block.data, image: e.target.value })}
+                      />
+                    </div>
+                  </div>
+                )}
+
+                {(block.type === 'instructions' || block.type === 'notes' || block.type === 'nutrition') && (
                   <div className="field-group">
                     <label>{block.type === 'instructions' ? 'Steps' : 'Items'} (one per line)</label>
                     <textarea
@@ -396,7 +454,7 @@ function AuthorEditor() {
             />
           </div>
           <div className="inspector-thumbnail">
-            {recipe.image ? <img src={resolvePublicAsset(recipe.image)} alt="" /> : null}
+            {recipe.image ? <img src={resolvePublicAsset(recipe.image)} alt="" loading="lazy" decoding="async" /> : null}
           </div>
           <div className="field-group">
             <label>Category</label>

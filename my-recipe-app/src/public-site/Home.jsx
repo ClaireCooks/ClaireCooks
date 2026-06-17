@@ -30,7 +30,7 @@ function Home() {
         <div className="recipe-carousel">
           {recentRecipes.map(recipe => (
             <Link key={recipe.slug} to={`/recipes/${recipe.slug}`} className="carousel-card">
-              <img src={resolvePublicAsset(recipe.image)} alt={recipe.title} />
+              <img src={resolvePublicAsset(recipe.image)} alt={recipe.title} loading="lazy" decoding="async" />
               <div className="card-overlay">
                 <span className="category">{recipe.category}</span>
                 <h3>{recipe.title}</h3>
@@ -44,7 +44,7 @@ function Home() {
       <section className="home-about-snapshot">
         <div className="snapshot-grid">
           <div className="snapshot-image">
-            <img src={claireImg} alt="Claire" />
+            <img src={claireImg} alt="Claire" loading="lazy" decoding="async" />
           </div>
           <div className="snapshot-content">
             <p className="eyebrow">Meet the Author</p>

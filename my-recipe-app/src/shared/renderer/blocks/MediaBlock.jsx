@@ -34,6 +34,8 @@ function MediaBlock({ block }) {
               src={resolvePublicAsset(mediaUrl)}
               alt={caption || ''}
               className="media-image"
+              loading="lazy"
+              decoding="async"
               onError={() => setFailedImageUrl(mediaUrl)}
             />
           )}

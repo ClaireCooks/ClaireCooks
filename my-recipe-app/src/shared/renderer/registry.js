@@ -4,6 +4,7 @@ import InstructionsBlock from './blocks/InstructionsBlock'
 import NotesBlock from './blocks/NotesBlock'
 import NutritionBlock from './blocks/NutritionBlock'
 import MediaBlock from './blocks/MediaBlock'
+import GalleryBlock from './blocks/GalleryBlock'
 
 export const blockComponents = {
   hero: HeroBlock,
@@ -12,6 +13,7 @@ export const blockComponents = {
   notes: NotesBlock,
   nutrition: NutritionBlock,
   media: MediaBlock,
+  gallery: GalleryBlock,
 }
 
 export function getBlockComponent(type) {

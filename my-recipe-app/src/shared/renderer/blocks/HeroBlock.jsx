@@ -2,44 +2,40 @@ import { resolvePublicAsset } from '../../utils/assets'
 
 function HeroBlock({ block, recipe }) {
   const { kicker, summary, backgroundImage } = block.data
-  const resolvedBackgroundImage = resolvePublicAsset(backgroundImage)
-  
-  const sectionStyle = backgroundImage 
-    ? { 
-        backgroundImage: `linear-gradient(rgba(0,0,0,0.5), rgba(0,0,0,0.5)), url("${resolvedBackgroundImage}")`,
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        color: '#fff',
-        border: 'none'
-      } 
-    : {}
+  const resolvedBackgroundImage = resolvePublicAsset(backgroundImage || recipe.image)
 
   return (
-    <section className="recipe-hero" style={sectionStyle}>
-      <p className="eyebrow" style={backgroundImage ? {color: 'rgba(255,255,255,0.8)'} : {}}>{kicker}</p>
-      <h1 style={backgroundImage ? {color: '#fff'} : {}}>{recipe.title}</h1>
-      <p className="hero-summary" style={backgroundImage ? {color: 'rgba(255,255,255,0.9)'} : {}}>{summary}</p>
-      
-      <dl className="recipe-facts">
-        <div style={backgroundImage ? {background: 'rgba(0,0,0,0.3)', borderColor: 'rgba(255,255,255,0.2)'} : {}}>
-          <dt style={backgroundImage ? {color: 'rgba(255,255,255,0.7)'} : {}}>Prep</dt>
-          <dd style={backgroundImage ? {color: '#fff'} : {}}>{recipe.prepTime}</dd>
-        </div>
-        <div style={backgroundImage ? {background: 'rgba(0,0,0,0.3)', borderColor: 'rgba(255,255,255,0.2)'} : {}}>
-          <dt style={backgroundImage ? {color: 'rgba(255,255,255,0.7)'} : {}}>Cook</dt>
-          <dd style={backgroundImage ? {color: '#fff'} : {}}>{recipe.cookTime}</dd>
-        </div>
-        <div style={backgroundImage ? {background: 'rgba(0,0,0,0.3)', borderColor: 'rgba(255,255,255,0.2)'} : {}}>
-          <dt style={backgroundImage ? {color: 'rgba(255,255,255,0.7)'} : {}}>Serves</dt>
-          <dd style={backgroundImage ? {color: '#fff'} : {}}>{recipe.servings}</dd>
-        </div>
-        {recipe.difficulty ? (
-          <div style={backgroundImage ? {background: 'rgba(0,0,0,0.3)', borderColor: 'rgba(255,255,255,0.2)'} : {}}>
-            <dt style={backgroundImage ? {color: 'rgba(255,255,255,0.7)'} : {}}>Level</dt>
-            <dd style={backgroundImage ? {color: '#fff'} : {}}>{recipe.difficulty}</dd>
+    <section className="recipe-hero">
+      <div className="recipe-hero__copy">
+        <p className="eyebrow">{kicker}</p>
+        <h1>{recipe.title}</h1>
+        <p className="hero-summary">{summary}</p>
+        
+        <dl className="recipe-facts">
+          <div>
+            <dt>Prep</dt>
+            <dd>{recipe.prepTime}</dd>
           </div>
-        ) : null}
-      </dl>
+          <div>
+            <dt>Cook</dt>
+            <dd>{recipe.cookTime}</dd>
+          </div>
+          <div>
+            <dt>Serves</dt>
+            <dd>{recipe.servings}</dd>
+          </div>
+          {recipe.difficulty ? (
+            <div>
+              <dt>Level</dt>
+              <dd>{recipe.difficulty}</dd>
+            </div>
+          ) : null}
+        </dl>
+      </div>
+
+      {resolvedBackgroundImage ? (
+        <img className="recipe-hero__image" src={resolvedBackgroundImage} alt="" loading="eager" decoding="async" />
+      ) : null}
     </section>
   )
 }
