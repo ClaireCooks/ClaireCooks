@@ -34,7 +34,7 @@ function HeroBlock({ block, recipe }) {
       </div>
 
       {resolvedBackgroundImage ? (
-        <img className="recipe-hero__image" src={resolvedBackgroundImage} alt="" loading="eager" decoding="async" />
+        <img className="recipe-hero__image" src={resolvedBackgroundImage} alt="" />
       ) : null}
     </section>
   )

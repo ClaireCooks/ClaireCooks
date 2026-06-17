@@ -19,8 +19,6 @@ function IngredientsBlock({ block }) {
           className="ingredients-side-image"
           src={resolvePublicAsset(image)}
           alt=""
-          loading="lazy"
-          decoding="async"
         />
       ) : null}
     </section>

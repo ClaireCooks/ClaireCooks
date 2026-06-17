@@ -7,8 +7,8 @@ export function restoreGitHubPagesRoute() {
   }
 
   const base = import.meta.env.BASE_URL || '/'
-  const normalizedBase = base.endsWith('/') ? base : `${base}/`
-  const nextPath = redirectedPath.startsWith('/') ? redirectedPath.slice(1) : redirectedPath
+  const route = redirectedPath.startsWith('/') ? redirectedPath : `/${redirectedPath}`
+  const nextUrl = new URL(route.slice(1), `${window.location.origin}${base}`)
 
-  window.history.replaceState(null, '', `${normalizedBase}${nextPath}`)
+  window.history.replaceState(null, '', `${nextUrl.pathname}${nextUrl.search}${nextUrl.hash}`)
 }

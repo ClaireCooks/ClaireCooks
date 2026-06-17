@@ -267,7 +267,7 @@ function AuthorEditor() {
             </div>
 
             <div className="recipe-paper-image">
-              {recipe.image ? <img src={resolvePublicAsset(recipe.image)} alt="" loading="eager" decoding="async" /> : null}
+              {recipe.image ? <img src={resolvePublicAsset(recipe.image)} alt="" /> : null}
               <span>{recipe.category}</span>
             </div>
           </section>
@@ -454,7 +454,7 @@ function AuthorEditor() {
             />
           </div>
           <div className="inspector-thumbnail">
-            {recipe.image ? <img src={resolvePublicAsset(recipe.image)} alt="" loading="lazy" decoding="async" /> : null}
+            {recipe.image ? <img src={resolvePublicAsset(recipe.image)} alt="" /> : null}
           </div>
           <div className="field-group">
             <label>Category</label>

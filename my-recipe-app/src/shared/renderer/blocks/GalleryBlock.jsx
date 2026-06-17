@@ -16,8 +16,6 @@ function GalleryBlock({ block }) {
             src={resolvePublicAsset(image)}
             alt=""
             key={`${image}-${index}`}
-            loading="lazy"
-            decoding="async"
           />
         ))}
       </div>

@@ -91,7 +91,7 @@ function Recipes() {
 function RecipeCard({ recipe }) {
   return (
     <Link className="recipe-card" to={`/recipes/${recipe.slug}`}>
-      <img src={resolvePublicAsset(recipe.image)} alt="" loading="lazy" decoding="async" />
+      <img src={resolvePublicAsset(recipe.image)} alt="" />
       <div className="recipe-card__body">
         <p className="eyebrow">{recipe.category}</p>
         <h2>{recipe.title}</h2>
