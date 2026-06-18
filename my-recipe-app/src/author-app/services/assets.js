@@ -17,7 +17,7 @@ export async function uploadRecipeImage({ file, recipeSlug, purpose, token }) {
     quality: 0.8,
   })
 
-  const filename = createAssetFilename({ recipeSlug, purpose })
+  const filename = createAssetFilename({ recipeSlug, purpose, type: compressed.type })
   const formData = new FormData()
   formData.append('file', compressed.blob, filename)
   formData.append('recipeSlug', recipeSlug)
@@ -58,12 +58,13 @@ export async function uploadRecipeImage({ file, recipeSlug, purpose, token }) {
   }
 }
 
-function createAssetFilename({ recipeSlug, purpose }) {
+function createAssetFilename({ recipeSlug, purpose, type }) {
   const timestamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z')
   const safeSlug = sanitizePathPart(recipeSlug || 'recipe')
   const safePurpose = sanitizePathPart(purpose || 'photo')
+  const extension = getExtensionForType(type)
 
-  return `${safeSlug}-${safePurpose}-${timestamp}.webp`
+  return `${safeSlug}-${safePurpose}-${timestamp}.${extension}`
 }
 
 function buildPublicUrl(key) {
@@ -78,4 +79,9 @@ function sanitizePathPart(value) {
     .toLowerCase()
     .replace(/[^a-z0-9]+/g, '-')
     .replace(/^-+|-+$/g, '')
+}
+
+function getExtensionForType(type) {
+  if (type === 'image/jpeg') return 'jpg'
+  return 'webp'
 }

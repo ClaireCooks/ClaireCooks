@@ -1,6 +1,7 @@
 const REPOSITORY_OWNER = 'ClaireCooks'
 const REPOSITORY_NAME = 'ClaireCooks'
 const MAX_UPLOAD_BYTES = 2 * 1024 * 1024
+const ALLOWED_IMAGE_TYPES = new Set(['image/webp', 'image/jpeg'])
 
 export default {
   async fetch(request, env) {
@@ -32,11 +33,11 @@ export default {
       }
 
       if (!(file instanceof File)) {
-        return json({ error: 'Upload a WebP image file.' }, 400, corsHeaders)
+        return json({ error: 'Upload a compressed image file.' }, 400, corsHeaders)
       }
 
-      if (file.type !== 'image/webp') {
-        return json({ error: 'Only compressed WebP uploads are accepted.' }, 400, corsHeaders)
+      if (!ALLOWED_IMAGE_TYPES.has(file.type)) {
+        return json({ error: 'Only compressed WebP or JPEG uploads are accepted.' }, 400, corsHeaders)
       }
 
       if (file.size > MAX_UPLOAD_BYTES) {
@@ -46,7 +47,7 @@ export default {
       const key = `recipes/${recipeSlug || 'recipe'}/${purpose || 'photo'}/${filename}`
       await env.RECIPE_IMAGES.put(key, file.stream(), {
         httpMetadata: {
-          contentType: 'image/webp',
+          contentType: file.type,
           cacheControl: 'public, max-age=31536000, immutable',
         },
         customMetadata: {
@@ -129,5 +130,9 @@ function sanitizeFilename(value) {
     .replace(/[^a-z0-9.-]+/g, '-')
     .replace(/^-+|-+$/g, '')
 
-  return filename.endsWith('.webp') ? filename : `${filename}.webp`
+  if (filename.endsWith('.webp') || filename.endsWith('.jpg') || filename.endsWith('.jpeg')) {
+    return filename
+  }
+
+  return `${filename}.webp`
 }

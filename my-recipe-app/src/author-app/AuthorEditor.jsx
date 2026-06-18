@@ -643,7 +643,7 @@ function AuthorEditor() {
                 disabled={photoUpload.isUploading}
               />
               <strong>{photoUpload.isUploading ? 'Working on photo...' : 'Choose Photo'}</strong>
-              <span>Converts to WebP, max 1600px wide, quality 80%.</span>
+              <span>Optimizes to WebP when supported, max 1600px wide, quality 80%.</span>
             </label>
             {photoUpload.message ? <p className="asset-upload-status">{photoUpload.message}</p> : null}
             {photoUpload.error ? <p className="asset-upload-status is-error">{photoUpload.error}</p> : null}

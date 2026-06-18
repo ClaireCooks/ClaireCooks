@@ -2,6 +2,7 @@ const DEFAULT_OPTIONS = {
   maxWidth: 1600,
   quality: 0.8,
   type: 'image/webp',
+  fallbackType: 'image/jpeg',
 }
 
 export async function compressImageFile(file, options = {}) {
@@ -19,7 +20,23 @@ export async function compressImageFile(file, options = {}) {
   context.drawImage(bitmap, 0, 0, width, height)
   bitmap.close?.()
 
-  const blob = await new Promise((resolve, reject) => {
+  const preferredBlob = await canvasToBlob(canvas, settings.type, settings.quality)
+  const blob = preferredBlob.type === settings.type
+    ? preferredBlob
+    : await canvasToBlob(canvas, settings.fallbackType, settings.quality)
+
+  return {
+    blob,
+    width,
+    height,
+    originalSize: file.size,
+    compressedSize: blob.size,
+    type: blob.type,
+  }
+}
+
+function canvasToBlob(canvas, type, quality) {
+  return new Promise((resolve, reject) => {
     canvas.toBlob(
       (result) => {
         if (result) {
@@ -28,19 +45,10 @@ export async function compressImageFile(file, options = {}) {
           reject(new Error('Unable to compress this image. Try a different photo.'))
         }
       },
-      settings.type,
-      settings.quality,
+      type,
+      quality,
     )
   })
-
-  return {
-    blob,
-    width,
-    height,
-    originalSize: file.size,
-    compressedSize: blob.size,
-    type: settings.type,
-  }
 }
 
 export function formatBytes(bytes) {
