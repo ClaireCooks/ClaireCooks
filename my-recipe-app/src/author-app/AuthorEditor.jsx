@@ -29,10 +29,12 @@ const PHOTO_PURPOSE_OPTIONS = [
   { value: 'gallery', label: 'Gallery photo' },
 ]
 
+const DEFAULT_RECIPE_TITLE = 'New Recipe'
+
 function createEmptyRecipe() {
   return {
     id: `recipe-${Date.now()}`,
-    title: 'New Recipe',
+    title: DEFAULT_RECIPE_TITLE,
     slug: '',
     description: 'Enter a description',
     image: '/recipe-art/crepes.svg',
@@ -155,9 +157,21 @@ function AuthorEditor() {
     setHasChanges(true)
   }
 
+  const getRecipeSlugForSave = () => {
+    if (slug) return slug
+    if (recipe.slug) return recipe.slug
+
+    const titleSlug = createSlug(recipe.title)
+    if (titleSlug && titleSlug !== createSlug(DEFAULT_RECIPE_TITLE)) {
+      return titleSlug
+    }
+
+    return recipe.id
+  }
+
   const prepareRecipeForSave = (nextStatus) => ({
     ...recipe,
-    slug: slug || createSlug(recipe.title),
+    slug: getRecipeSlugForSave(),
     status: nextStatus,
     category: recipe.category.trim(),
     image: recipe.image.trim(),
@@ -201,6 +215,18 @@ function AuthorEditor() {
 
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  const getAssetRecipeSlug = () => {
+    if (slug) return slug
+    if (recipe.slug) return recipe.slug
+
+    const titleSlug = createSlug(recipe.title)
+    if (titleSlug && titleSlug !== createSlug(DEFAULT_RECIPE_TITLE)) {
+      return titleSlug
+    }
+
+    return recipe.id
   }
 
   const assignUploadedPhoto = (url, purpose) => {
@@ -283,7 +309,7 @@ function AuthorEditor() {
     setPhotoUpload({ isUploading: true, message: 'Compressing photo...', error: '' })
 
     try {
-      const recipeSlug = slug || createSlug(recipe.title) || recipe.id
+      const recipeSlug = getAssetRecipeSlug()
       const result = await uploadRecipeImage({
         file,
         recipeSlug,
@@ -613,7 +639,6 @@ function AuthorEditor() {
               <input
                 type="file"
                 accept="image/*"
-                capture="environment"
                 onChange={handlePhotoUpload}
                 disabled={photoUpload.isUploading}
               />
