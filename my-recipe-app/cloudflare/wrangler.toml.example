@@ -1,0 +1,11 @@
+name = "clairecooks-image-upload"
+main = "image-upload-worker.js"
+compatibility_date = "2026-06-17"
+
+[vars]
+ALLOWED_ORIGIN = "https://clairecooks.github.io"
+PUBLIC_ASSET_BASE_URL = "https://images.example.com"
+
+[[r2_buckets]]
+binding = "RECIPE_IMAGES"
+bucket_name = "clairecooks-recipe-images"

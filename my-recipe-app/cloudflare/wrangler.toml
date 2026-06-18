@@ -1,0 +1,12 @@
+name = "clairecooks-image-upload"
+main = "image-upload-worker.js"
+compatibility_date = "2026-06-17"
+account_id = "212be9381133d11ac3060823e895951d"
+
+[vars]
+ALLOWED_ORIGIN = "https://clairecooks.github.io"
+PUBLIC_ASSET_BASE_URL = "https://pub-b219213e36074f04bcc0424ce16a0ffb.r2.dev"
+
+[[r2_buckets]]
+binding = "RECIPE_IMAGES"
+bucket_name = "clairecooks"

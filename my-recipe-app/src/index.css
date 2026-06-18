@@ -1032,6 +1032,69 @@ main {
   aspect-ratio: 4 / 3;
 }
 
+.asset-upload {
+  display: grid;
+  gap: 12px;
+}
+
+.asset-dropzone {
+  align-items: center;
+  background: #f9fafb;
+  border: 1px dashed #cbd5e1;
+  border-radius: 8px;
+  cursor: pointer;
+  display: grid;
+  gap: 6px;
+  justify-items: center;
+  min-height: 128px;
+  padding: 20px 14px;
+  text-align: center;
+  transition: border-color 0.2s ease, background 0.2s ease;
+}
+
+.asset-dropzone:hover {
+  background: #fff;
+  border-color: var(--accent);
+}
+
+.asset-dropzone.is-busy {
+  cursor: wait;
+  opacity: 0.72;
+}
+
+.asset-dropzone input {
+  height: 1px;
+  opacity: 0;
+  overflow: hidden;
+  position: absolute;
+  width: 1px;
+}
+
+.asset-dropzone strong {
+  font-size: 15px;
+}
+
+.asset-dropzone span,
+.asset-upload-status {
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.asset-upload-status {
+  background: #ecfdf5;
+  border: 1px solid #bbf7d0;
+  border-radius: 8px;
+  color: #047857;
+  padding: 10px 12px;
+}
+
+.asset-upload-status.is-error {
+  background: #fef2f2;
+  border-color: #fecaca;
+  color: #b91c1c;
+}
+
 .field-group label {
   font-size: 12px;
   font-weight: 700;

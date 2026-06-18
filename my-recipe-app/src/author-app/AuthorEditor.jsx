@@ -1,9 +1,12 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { fetchRecipes, commitRecipe } from './services/github'
+import { uploadRecipeImage } from './services/assets'
 import { validateRecipe } from '../shared/content/recipes/schema'
 import { createSlug } from '../shared/utils/slugs'
 import { resolvePublicAsset } from '../shared/utils/assets'
+import { formatBytes } from './services/imageCompression'
+import { useAuth } from './useAuth'
 
 const CATEGORY_OPTIONS = [
   'Breakfast',
@@ -16,6 +19,14 @@ const CATEGORY_OPTIONS = [
   'Side Dish',
   'Drink',
   'Uncategorized',
+]
+
+const PHOTO_PURPOSE_OPTIONS = [
+  { value: 'card', label: 'Recipe card thumbnail' },
+  { value: 'hero', label: 'Hero side photo' },
+  { value: 'ingredients', label: 'Ingredients side photo' },
+  { value: 'media', label: 'Media block image' },
+  { value: 'gallery', label: 'Gallery photo' },
 ]
 
 function createEmptyRecipe() {
@@ -59,10 +70,17 @@ function createEmptyRecipe() {
 function AuthorEditor() {
   const { slug } = useParams()
   const navigate = useNavigate()
+  const { token } = useAuth()
   const [recipe, setRecipe] = useState(() => (slug ? null : createEmptyRecipe()))
   const [hasChanges, setHasChanges] = useState(false)
   const [isSaving, setIsSaving] = useState(false)
   const [isLoading, setIsLoading] = useState(() => Boolean(slug))
+  const [photoPurpose, setPhotoPurpose] = useState('card')
+  const [photoUpload, setPhotoUpload] = useState({
+    isUploading: false,
+    message: '',
+    error: '',
+  })
 
   useEffect(() => {
     if (!slug) {
@@ -183,6 +201,105 @@ function AuthorEditor() {
 
   const scrollToSection = (id) => {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
+  const assignUploadedPhoto = (url, purpose) => {
+    setRecipe((prev) => {
+      if (purpose === 'card') {
+        return { ...prev, image: url }
+      }
+
+      const blocks = [...prev.blocks]
+      const matchingIndex = blocks.findIndex((block) => block.type === purpose || (purpose === 'media' && block.type === 'media'))
+
+      if (purpose === 'hero') {
+        const heroIndex = blocks.findIndex((block) => block.type === 'hero')
+        if (heroIndex >= 0) {
+          blocks[heroIndex] = {
+            ...blocks[heroIndex],
+            data: { ...blocks[heroIndex].data, backgroundImage: url },
+          }
+        } else {
+          blocks.unshift({ type: 'hero', data: { kicker: prev.title, summary: prev.description, backgroundImage: url } })
+        }
+      }
+
+      if (purpose === 'ingredients') {
+        const ingredientsIndex = blocks.findIndex((block) => block.type === 'ingredients')
+        if (ingredientsIndex >= 0) {
+          blocks[ingredientsIndex] = {
+            ...blocks[ingredientsIndex],
+            data: { ...blocks[ingredientsIndex].data, image: url },
+          }
+        } else {
+          blocks.push({ type: 'ingredients', data: { items: ['New ingredient'], image: url } })
+        }
+      }
+
+      if (purpose === 'media') {
+        if (matchingIndex >= 0) {
+          blocks[matchingIndex] = {
+            ...blocks[matchingIndex],
+            data: { ...blocks[matchingIndex].data, type: 'image', url },
+          }
+        } else {
+          blocks.push({ type: 'media', data: { type: 'image', url, caption: '' } })
+        }
+      }
+
+      if (purpose === 'gallery') {
+        const galleryIndex = blocks.findIndex((block) => block.type === 'gallery')
+        if (galleryIndex >= 0) {
+          blocks[galleryIndex] = {
+            ...blocks[galleryIndex],
+            data: {
+              ...blocks[galleryIndex].data,
+              images: [...(blocks[galleryIndex].data.images || []).filter(Boolean), url],
+            },
+          }
+        } else {
+          blocks.push({ type: 'gallery', data: { images: [url], caption: '' } })
+        }
+      }
+
+      return { ...prev, blocks }
+    })
+    setHasChanges(true)
+  }
+
+  const handlePhotoUpload = async (event) => {
+    const file = event.target.files?.[0]
+    event.target.value = ''
+
+    if (!file) {
+      return
+    }
+
+    if (!file.type.startsWith('image/')) {
+      setPhotoUpload({ isUploading: false, message: '', error: 'Choose an image file to upload.' })
+      return
+    }
+
+    setPhotoUpload({ isUploading: true, message: 'Compressing photo...', error: '' })
+
+    try {
+      const recipeSlug = slug || createSlug(recipe.title) || recipe.id
+      const result = await uploadRecipeImage({
+        file,
+        recipeSlug,
+        purpose: photoPurpose,
+        token,
+      })
+
+      assignUploadedPhoto(result.url, photoPurpose)
+      setPhotoUpload({
+        isUploading: false,
+        error: '',
+        message: `${formatBytes(result.originalSize)} to ${formatBytes(result.compressedSize)}. Added ${PHOTO_PURPOSE_OPTIONS.find((option) => option.value === photoPurpose)?.label.toLowerCase()}.`,
+      })
+    } catch (error) {
+      setPhotoUpload({ isUploading: false, message: '', error: error.message })
+    }
   }
 
   const handleSave = async (nextStatus = recipe.status) => {
@@ -478,6 +595,33 @@ function AuthorEditor() {
               value={(recipe.tags || []).join(', ')}
               onChange={(e) => updateMetadata('tags', e.target.value.split(',').map(s => s.trim()))}
             />
+          </div>
+        </section>
+
+        <section className="inspector-card">
+          <h2>Photo Upload</h2>
+          <div className="asset-upload">
+            <div className="field-group">
+              <label>Use Photo As</label>
+              <select value={photoPurpose} onChange={(e) => setPhotoPurpose(e.target.value)}>
+                {PHOTO_PURPOSE_OPTIONS.map((option) => (
+                  <option value={option.value} key={option.value}>{option.label}</option>
+                ))}
+              </select>
+            </div>
+            <label className={`asset-dropzone${photoUpload.isUploading ? ' is-busy' : ''}`}>
+              <input
+                type="file"
+                accept="image/*"
+                capture="environment"
+                onChange={handlePhotoUpload}
+                disabled={photoUpload.isUploading}
+              />
+              <strong>{photoUpload.isUploading ? 'Working on photo...' : 'Choose Photo'}</strong>
+              <span>Converts to WebP, max 1600px wide, quality 80%.</span>
+            </label>
+            {photoUpload.message ? <p className="asset-upload-status">{photoUpload.message}</p> : null}
+            {photoUpload.error ? <p className="asset-upload-status is-error">{photoUpload.error}</p> : null}
           </div>
         </section>
       </aside>
