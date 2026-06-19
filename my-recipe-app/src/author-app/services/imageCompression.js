@@ -1,3 +1,5 @@
+import encodeWebp from '@jsquash/webp/encode'
+
 const DEFAULT_OPTIONS = {
   maxWidth: 1600,
   quality: 0.8,
@@ -20,10 +22,8 @@ export async function compressImageFile(file, options = {}) {
   context.drawImage(bitmap, 0, 0, width, height)
   bitmap.close?.()
 
-  const preferredBlob = await canvasToBlob(canvas, settings.type, settings.quality)
-  const blob = preferredBlob.type === settings.type
-    ? preferredBlob
-    : await canvasToBlob(canvas, settings.fallbackType, settings.quality)
+  const imageData = context.getImageData(0, 0, width, height)
+  const blob = await encodeCanvasToWebp(imageData, settings)
 
   return {
     blob,
@@ -33,6 +33,34 @@ export async function compressImageFile(file, options = {}) {
     compressedSize: blob.size,
     type: blob.type,
   }
+}
+
+async function encodeCanvasToWebp(imageData, settings) {
+  try {
+    const webpBuffer = await encodeWebp(imageData, {
+      quality: normalizeEncoderQuality(settings.quality),
+    })
+
+    return new Blob([webpBuffer], { type: 'image/webp' })
+  } catch {
+    const preferredBlob = await canvasToBlobFromImageData(imageData, settings.type, settings.quality)
+
+    if (preferredBlob.type === settings.type) {
+      return preferredBlob
+    }
+
+    return canvasToBlobFromImageData(imageData, settings.fallbackType, settings.quality)
+  }
+}
+
+function canvasToBlobFromImageData(imageData, type, quality) {
+  const canvas = document.createElement('canvas')
+  canvas.width = imageData.width
+  canvas.height = imageData.height
+  const context = canvas.getContext('2d')
+  context.putImageData(imageData, 0, 0)
+
+  return canvasToBlob(canvas, type, quality)
 }
 
 function canvasToBlob(canvas, type, quality) {
@@ -49,6 +77,10 @@ function canvasToBlob(canvas, type, quality) {
       quality,
     )
   })
+}
+
+function normalizeEncoderQuality(quality) {
+  return quality <= 1 ? Math.round(quality * 100) : quality
 }
 
 export function formatBytes(bytes) {
