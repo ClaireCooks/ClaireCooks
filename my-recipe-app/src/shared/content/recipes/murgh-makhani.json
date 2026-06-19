@@ -3,7 +3,7 @@
   "title": "Murgh Makhani",
   "slug": "murgh-makhani",
   "description": "Authentic Style North Indian butter chicken",
-  "image": "https://1drv.ms/i/c/453dc263ab1fb587/IQRsn5nBLM0USpfs8jvfouR9AcIPOOsjnbjWscJPN4SXVHs?width=4271&height=5095",
+  "image": "https://pub-b219213e36074f04bcc0424ce16a0ffb.r2.dev/recipes/murgh-makhani/hero/murgh-makhani-hero-20260619t190042z.webp",
   "category": "Dinner",
   "status": "published",
   "difficulty": "Easy",
@@ -20,7 +20,7 @@
       "data": {
         "kicker": "Dinner",
         "summary": "Yogurt marinated chicken with a buttery tomato sauce",
-        "backgroundImage": "https://1drv.ms/i/c/453dc263ab1fb587/IQRsn5nBLM0USpfs8jvfouR9AcIPOOsjnbjWscJPN4SXVHs?width=4271&height=5095"
+        "backgroundImage": "https://pub-b219213e36074f04bcc0424ce16a0ffb.r2.dev/recipes/murgh-makhani/hero/murgh-makhani-hero-20260619t190042z.webp"
       }
     },
     {
@@ -62,7 +62,7 @@
       "type": "media",
       "data": {
         "type": "image",
-        "url": "https://1drv.ms/i/c/453dc263ab1fb587/IQRr2-4d4sXmQZ5RlQTT7DRXAZAW32Zt_RkZmFRiUlwxP6o?width=4284&height=5712",
+        "url": "https://pub-b219213e36074f04bcc0424ce16a0ffb.r2.dev/recipes/murgh-makhani/media/murgh-makhani-media-20260619t190147z.webp",
         "caption": ""
       }
     }
