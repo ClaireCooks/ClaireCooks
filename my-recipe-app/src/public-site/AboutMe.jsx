@@ -1,5 +1,5 @@
 import Header from '../shared/components/Header.jsx'
-import claireImg from '../shared/assets/Claire.jpg'
+import claireAboutImg from '../shared/assets/ClaireAbout.jpeg'
 
 function AboutMe() {
   return (
@@ -8,7 +8,7 @@ function AboutMe() {
       
       <div className="about-layout">
         <div className="about-image-large">
-          <img src={claireImg} alt="Claire" />
+          <img src={claireAboutImg} alt="Claire" />
         </div>
         
         <div className="about-content-rich">

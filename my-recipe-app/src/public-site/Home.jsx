@@ -1,6 +1,6 @@
 import { Link } from 'react-router-dom'
 import { publishedRecipes } from '../shared/content/recipes'
-import claireImg from '../shared/assets/Claire.jpg'
+import claireHomeImg from '../shared/assets/ClaireHome.jpeg'
 import { resolvePublicAsset } from '../shared/utils/assets'
 
 function Home() {
@@ -44,7 +44,7 @@ function Home() {
       <section className="home-about-snapshot">
         <div className="snapshot-grid">
           <div className="snapshot-image">
-            <img src={claireImg} alt="Claire" />
+            <img src={claireHomeImg} alt="Claire" />
           </div>
           <div className="snapshot-content">
             <p className="eyebrow">Meet the Author</p>
