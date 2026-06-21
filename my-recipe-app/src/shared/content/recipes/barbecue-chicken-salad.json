@@ -1,0 +1,57 @@
+{
+  "id": "recipe-1782006242211",
+  "title": "Barbecue Chicken Salad",
+  "slug": "barbecue-chicken-salad",
+  "description": "Smoky barbecue chicken, crisp romaine lettuce, red onion, bell peppers, grilled carrots, and cheddar cheese come together for a fresh, flavorful salad packed with backyard barbecue flavor.",
+  "image": "https://pub-b219213e36074f04bcc0424ce16a0ffb.r2.dev/recipes/barbecue-chicken-salad/card/barbecue-chicken-salad-card-20260621t015131z.webp",
+  "category": "Dinner",
+  "status": "published",
+  "difficulty": "Easy",
+  "prepTime": "15 min",
+  "cookTime": "20 min",
+  "servings": 4,
+  "tags": [
+    "Dinner",
+    "Easy",
+    "Gluten-free"
+  ],
+  "blocks": [
+    {
+      "type": "hero",
+      "data": {
+        "kicker": "Dinner",
+        "summary": "Enter a summary for the hero block"
+      }
+    },
+    {
+      "type": "ingredients",
+      "data": {
+        "items": [
+          "Romaine lettuce",
+          "Bell pepper",
+          "Carrot",
+          "Red onion",
+          "Grilled chicken",
+          "Barbecue sauce"
+        ],
+        "image": ""
+      }
+    },
+    {
+      "type": "instructions",
+      "data": {
+        "steps": [
+          "Wash and chop the romaine lettuce, then place it in a large mixing bowl.",
+          "Thinly slice the red onion and bell pepper.",
+          "Grill the carrots until tender and lightly charred, then slice into bite-sized pieces.",
+          "Cook the chicken until fully cooked and brush generously with barbecue sauce during the final few minutes of cooking.",
+          "Allow the chicken to rest for 5 minutes, then slice into strips.",
+          "Add the red onion, bell pepper, grilled carrots, and shredded cheddar cheese to the bowl with the romaine lettuce.",
+          "Toss the vegetables and cheese until evenly combined.",
+          "Top with the sliced barbecue chicken.",
+          "Drizzle with your favorite dressing, if desired, and serve immediately."
+        ]
+      }
+    }
+  ]
+}
