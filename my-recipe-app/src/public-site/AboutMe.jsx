@@ -15,29 +15,43 @@ function AboutMe() {
           <section className="about-section">
             <h2>The Kitchen Journey</h2>
             <p>
-              Welcome to my culinary sanctuary. I'm Claire, a self-taught cook and food 
-              enthusiast dedicated to the art of simple, soulful cooking. My journey 
-              started in a small kitchen with a handful of family recipes and a 
-              passion for gathering people around the table.
+              My cooking journey has been entirely self-taught, shaped by years of
+              curiosity, creativity, and a love for good food. Living with celiac
+              disease pushed me to learn how to adapt recipes and experiment with new
+              ingredients, but it also sparked a passion for cooking that continues to
+              grow today.
+            </p>
+            <p>
+              I love trying new recipes, learning new techniques, and finding ways to
+              make gluten-free dishes feel just as special as their traditional
+              counterparts.
             </p>
           </section>
 
           <section className="about-section">
             <h2>Philosophy</h2>
             <p>
-              I believe that cooking should be an act of joy, not a chore. My recipes 
-              focus on high-quality seasonal ingredients, clear techniques, and the 
-              occasional creative twist on the classics. Whether you're a seasoned 
-              chef or just starting out, there's a seat at this table for you.
+              I believe gluten-free food should never feel like a compromise.
+            </p>
+            <p>
+              My goal is to challenge that idea by creating recipes that are flavorful,
+              exciting, and something you'll genuinely look forward to eating. Whether
+              it's a comforting weeknight dinner, a decadent dessert, or a dish for a
+              special occasion, every recipe should bring joy to the table.
+            </p>
+            <p>
+              Great food is for everyone, and being gluten-free shouldn't mean missing
+              out.
             </p>
           </section>
 
           <section className="about-section">
             <h2>Beyond the Plate</h2>
             <p>
-              When I'm not developing recipes or photographing food, you'll likely 
-              find me exploring local farmers' markets, tending to my herb garden, 
-              or hunting for vintage kitchenware.
+              When I'm not in the kitchen, I'm a middle school psychologist who is
+              passionate about helping students learn, grow, and succeed. Outside of
+              work, you'll usually find me curled up with a good book, planning my next
+              travel adventure, or exploring new places and experiences.
             </p>
           </section>
         </div>

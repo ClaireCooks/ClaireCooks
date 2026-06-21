@@ -1439,6 +1439,10 @@ main {
   line-height: 1.8;
 }
 
+.about-section p + p {
+  margin-top: 18px;
+}
+
 @media (max-width: 1024px) {
   .recipe-carousel {
     grid-template-columns: 1fr;

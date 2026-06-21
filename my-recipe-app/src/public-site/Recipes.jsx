@@ -35,10 +35,7 @@ function Recipes() {
   return (
     <>
       <Header eyebrow="Recipe Library" title="Browse recipes">
-        <p>
-          Search the structured recipe library, filter by category, and open
-          fully rendered recipe pages from local JSON content.
-        </p>
+
       </Header>
 
       <section className="catalog-tools" aria-label="Recipe filters">

@@ -13,7 +13,7 @@ function Home() {
         <div className="hero-overlay"></div>
         <div className="hero-content">
           <p className="eyebrow">Claire Cooks</p>
-          <h1>Elevated Flavors, <br/>Simple Techniques.</h1>
+          <h1>Elevated Flavors, <br />Simple Techniques.</h1>
           <div className="hero-actions">
             <Link to="/recipes" className="btn btn-primary">Browse Recipes</Link>
             <Link to="/about" className="btn">About Claire</Link>
@@ -50,9 +50,18 @@ function Home() {
             <p className="eyebrow">Meet the Author</p>
             <h2>I'm Claire, and I believe everyone can cook beautiful food.</h2>
             <p>
-              After years of experimenting in my own kitchen, I've curated a collection 
-              of my favorite recipes designed for the home cook who wants restaurant-quality 
-              results without the complexity.
+              I've been living gluten-free since I was diagnosed with celiac disease at
+              nine years old. What started as a necessity eventually became a passion
+              for cooking, creating, and sharing food that looks just as beautiful as it
+              tastes.
+            </p>
+            <p>
+              At 25, you'll usually find me in the kitchen testing new recipes, plating
+              dishes for the perfect photo, or sharing my latest gluten-free creations
+              online. Through this website and my social channels, my goal is simple: to
+              show that gluten-free food doesn't have to feel limiting. It can be
+              comforting, creative, impressive, and something you're genuinely excited to
+              make and share.
             </p>
             <Link to="/about" className="btn btn-primary">Read My Story</Link>
           </div>
