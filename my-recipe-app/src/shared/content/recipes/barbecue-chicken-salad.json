@@ -52,6 +52,16 @@
           "Drizzle with your favorite dressing, if desired, and serve immediately."
         ]
       }
+    },
+    {
+      "type": "nutrition",
+      "data": {
+        "items": [
+          "Calories: 420",
+          "Protein: 45 g"
+        ],
+        "image": ""
+      }
     }
   ]
 }
