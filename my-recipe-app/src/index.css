@@ -1144,6 +1144,22 @@ main {
   border-color: var(--accent);
 }
 
+.tag-suggestions-toggle {
+  background: transparent;
+  border: 0;
+  color: var(--text-muted);
+  cursor: pointer;
+  font-size: 12px;
+  font-weight: 800;
+  margin-top: 10px;
+  padding: 0;
+  text-align: left;
+}
+
+.tag-suggestions-toggle:hover {
+  color: var(--text);
+}
+
 .field-group input, .field-group textarea, .field-group select {
   width: 100%;
   padding: 12px 16px;

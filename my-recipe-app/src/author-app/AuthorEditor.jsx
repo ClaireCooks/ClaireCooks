@@ -31,15 +31,43 @@ const PHOTO_PURPOSE_OPTIONS = [
 
 const DEFAULT_RECIPE_TITLE = 'New Recipe'
 const DEFAULT_TAG_SUGGESTIONS = [
-  'weeknight',
-  'make-ahead',
-  'comfort',
-  'vegetarian',
-  'high-protein',
-  'one-pan',
-  'quick',
+  '30-minute',
+  'appetizer',
+  'baking',
+  'batch-cooking',
+  'breakfast',
+  'budget-friendly',
+  'comfort-food',
+  'date-night',
+  'dessert',
+  'dinner',
   'family-favorite',
+  'freezer-friendly',
+  'gluten-free',
+  'grilling',
+  'healthy',
+  'high-protein',
+  'holiday',
+  'kid-friendly',
+  'lunch',
+  'make-ahead',
+  'meal-prep',
+  'no-bake',
+  'one-pan',
+  'party',
+  'quick',
+  'salad',
+  'sauce',
+  'side-dish',
+  'slow-cooker',
+  'snack',
+  'soup',
+  'spicy',
+  'vegetarian',
+  'comfort',
+  'weeknight',
 ]
+const TAG_SUGGESTION_COLLAPSED_COUNT = 10
 
 function createEmptyRecipe() {
   return {
@@ -119,6 +147,7 @@ function AuthorEditor() {
     error: '',
   })
   const [knownTags, setKnownTags] = useState(DEFAULT_TAG_SUGGESTIONS)
+  const [showAllTagSuggestions, setShowAllTagSuggestions] = useState(false)
 
   useEffect(() => {
     fetchRecipes()
@@ -427,6 +456,15 @@ function AuthorEditor() {
     }
   }
 
+  const selectedTags = (recipe.tags || []).filter(Boolean)
+  const availableTagSuggestions = knownTags.filter(
+    (tag) => !selectedTags.some((selectedTag) => selectedTag.toLowerCase() === tag.toLowerCase()),
+  )
+  const visibleTagSuggestions = showAllTagSuggestions
+    ? availableTagSuggestions
+    : availableTagSuggestions.slice(0, TAG_SUGGESTION_COLLAPSED_COUNT)
+  const hasHiddenTagSuggestions = availableTagSuggestions.length > TAG_SUGGESTION_COLLAPSED_COUNT
+
   return (
     <div className="author-editor-layout">
       <aside className="editor-rail">
@@ -701,9 +739,9 @@ function AuthorEditor() {
               onChange={(e) => updateMetadata('tags', parseTagInput(e.target.value))}
             />
             <p className="field-hint">Use tags for search and filtering details beyond category.</p>
-            {(recipe.tags || []).filter(Boolean).length > 0 ? (
+            {selectedTags.length > 0 ? (
               <div className="tag-chip-list" aria-label="Selected tags">
-                {(recipe.tags || []).filter(Boolean).map((tag) => (
+                {selectedTags.map((tag) => (
                   <button type="button" key={tag} onClick={() => removeTag(tag)}>
                     {tag}
                   </button>
@@ -711,15 +749,21 @@ function AuthorEditor() {
               </div>
             ) : null}
             <div className="tag-suggestions" aria-label="Suggested tags">
-              {knownTags
-                .filter((tag) => !(recipe.tags || []).some((selectedTag) => selectedTag.toLowerCase() === tag.toLowerCase()))
-                .slice(0, 12)
-                .map((tag) => (
-                  <button type="button" key={tag} onClick={() => addTag(tag)}>
-                    {tag}
-                  </button>
-                ))}
+              {visibleTagSuggestions.map((tag) => (
+                <button type="button" key={tag} onClick={() => addTag(tag)}>
+                  {tag}
+                </button>
+              ))}
             </div>
+            {hasHiddenTagSuggestions ? (
+              <button
+                className="tag-suggestions-toggle"
+                type="button"
+                onClick={() => setShowAllTagSuggestions((isShowing) => !isShowing)}
+              >
+                {showAllTagSuggestions ? 'Show fewer tags' : `Show ${availableTagSuggestions.length - TAG_SUGGESTION_COLLAPSED_COUNT} more tags`}
+              </button>
+            ) : null}
           </div>
         </section>
 
