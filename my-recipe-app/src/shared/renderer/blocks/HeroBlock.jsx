@@ -3,13 +3,15 @@ import { resolvePublicAsset } from '../../utils/assets'
 function HeroBlock({ block, recipe }) {
   const { kicker, summary, backgroundImage } = block.data
   const resolvedBackgroundImage = resolvePublicAsset(backgroundImage || recipe.image)
+  const displayKicker = kicker || recipe.category
+  const displaySummary = summary || recipe.description
 
   return (
     <section className="recipe-hero">
       <div className="recipe-hero__copy">
-        <p className="eyebrow">{kicker}</p>
+        <p className="eyebrow">{displayKicker}</p>
         <h1>{recipe.title}</h1>
-        <p className="hero-summary">{summary}</p>
+        <p className="hero-summary">{displaySummary}</p>
         
         <dl className="recipe-facts">
           <div>

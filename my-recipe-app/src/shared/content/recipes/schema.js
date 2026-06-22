@@ -1,6 +1,10 @@
 const blockValidators = {
   hero(block) {
-    return requireObjectFields(block.data, ['kicker', 'summary'], 'hero.data')
+    if (block.data?.backgroundImage && !isNonEmptyString(block.data.backgroundImage)) {
+      return ['hero.data.backgroundImage must be a non-empty string when provided.']
+    }
+
+    return []
   },
   media(block) {
     const errors = requireObjectFields(block.data, ['type', 'url'], 'media.data')

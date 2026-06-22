@@ -30,6 +30,16 @@ const PHOTO_PURPOSE_OPTIONS = [
 ]
 
 const DEFAULT_RECIPE_TITLE = 'New Recipe'
+const DEFAULT_TAG_SUGGESTIONS = [
+  'weeknight',
+  'make-ahead',
+  'comfort',
+  'vegetarian',
+  'high-protein',
+  'one-pan',
+  'quick',
+  'family-favorite',
+]
 
 function createEmptyRecipe() {
   return {
@@ -49,8 +59,9 @@ function createEmptyRecipe() {
       {
         type: 'hero',
         data: {
-          kicker: 'New Recipe',
-          summary: 'Enter a summary for the hero block',
+          kicker: '',
+          summary: '',
+          backgroundImage: '',
         },
       },
       {
@@ -69,6 +80,30 @@ function createEmptyRecipe() {
   }
 }
 
+function collectKnownTags(recipes) {
+  const tags = new Set(DEFAULT_TAG_SUGGESTIONS)
+
+  recipes.forEach((recipe) => {
+    const recipeTags = recipe.tags || []
+
+    recipeTags.forEach((tag) => {
+      const normalizedTag = tag.trim()
+      if (normalizedTag) {
+        tags.add(normalizedTag)
+      }
+    })
+  })
+
+  return [...tags].sort((a, b) => a.localeCompare(b))
+}
+
+function parseTagInput(value) {
+  return value
+    .split(',')
+    .map((tag) => tag.trim())
+    .filter(Boolean)
+}
+
 function AuthorEditor() {
   const { slug } = useParams()
   const navigate = useNavigate()
@@ -83,21 +118,25 @@ function AuthorEditor() {
     message: '',
     error: '',
   })
+  const [knownTags, setKnownTags] = useState(DEFAULT_TAG_SUGGESTIONS)
 
   useEffect(() => {
-    if (!slug) {
-      return
-    }
-
     fetchRecipes()
       .then(all => {
-        const existing = all.find(r => r.slug === slug)
-        if (existing) {
-          setRecipe(existing)
+        setKnownTags(collectKnownTags(all))
+        if (slug) {
+          const existing = all.find(r => r.slug === slug)
+          if (existing) {
+            setRecipe(existing)
+          }
+          setIsLoading(false)
         }
-        setIsLoading(false)
       })
-      .catch(() => setIsLoading(false))
+      .catch(() => {
+        if (slug) {
+          setIsLoading(false)
+        }
+      })
   }, [slug])
 
   if (isLoading) return <div style={{ padding: '80px', textAlign: 'center' }}><h2>Loading recipe data...</h2></div>
@@ -110,7 +149,7 @@ function AuthorEditor() {
 
   const addBlock = (type) => {
     const defaultData = {
-      hero: { kicker: 'New Section', summary: 'Summary text', backgroundImage: '' },
+      hero: { kicker: '', summary: '', backgroundImage: '' },
       ingredients: { items: ['New ingredient'], image: '' },
       instructions: { steps: ['New step'] },
       notes: { items: ['New note'] },
@@ -177,6 +216,18 @@ function AuthorEditor() {
     image: recipe.image.trim(),
     tags: (recipe.tags || []).map((tag) => tag.trim()).filter(Boolean),
     blocks: recipe.blocks.map((block) => {
+      if (block.type === 'hero') {
+        return {
+          ...block,
+          data: {
+            ...block.data,
+            kicker: block.data.kicker?.trim() || recipe.category.trim(),
+            summary: block.data.summary?.trim() || recipe.description.trim(),
+            backgroundImage: block.data.backgroundImage?.trim() || '',
+          },
+        }
+      }
+
       if (['ingredients', 'notes', 'nutrition'].includes(block.type)) {
         return {
           ...block,
@@ -217,6 +268,29 @@ function AuthorEditor() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  const addTag = (tag) => {
+    const normalizedTag = tag.trim()
+    if (!normalizedTag) return
+
+    setRecipe((prev) => {
+      const currentTags = prev.tags || []
+      const alreadySelected = currentTags.some(
+        (existingTag) => existingTag.toLowerCase() === normalizedTag.toLowerCase(),
+      )
+
+      return alreadySelected ? prev : { ...prev, tags: [...currentTags, normalizedTag] }
+    })
+    setHasChanges(true)
+  }
+
+  const removeTag = (tag) => {
+    setRecipe((prev) => ({
+      ...prev,
+      tags: (prev.tags || []).filter((existingTag) => existingTag !== tag),
+    }))
+    setHasChanges(true)
+  }
+
   const getAssetRecipeSlug = () => {
     if (slug) return slug
     if (recipe.slug) return recipe.slug
@@ -246,7 +320,7 @@ function AuthorEditor() {
             data: { ...blocks[heroIndex].data, backgroundImage: url },
           }
         } else {
-          blocks.unshift({ type: 'hero', data: { kicker: prev.title, summary: prev.description, backgroundImage: url } })
+          blocks.unshift({ type: 'hero', data: { backgroundImage: url } })
         }
       }
 
@@ -401,11 +475,12 @@ function AuthorEditor() {
               </div>
 
               <div className="field-group">
-                <label>Description</label>
+                <label>Recipe Card Description</label>
                 <textarea
                   value={recipe.description}
                   onChange={(e) => updateMetadata('description', e.target.value)}
                 />
+                <p className="field-hint">Short catalog blurb shown on recipe cards and search results.</p>
               </div>
             </div>
 
@@ -461,27 +536,31 @@ function AuthorEditor() {
                 {block.type === 'hero' && (
                   <div className="block-field-grid">
                     <div className="field-group">
-                      <label>Kicker</label>
+                      <label>Hero Eyebrow</label>
                       <input
                         type="text"
-                        value={block.data.kicker}
+                        placeholder={recipe.category || 'Dinner'}
+                        value={block.data.kicker || ''}
                         onChange={(e) => updateBlockData(index, { ...block.data, kicker: e.target.value })}
                       />
+                      <p className="field-hint">Small label above the title. Leave blank to use the category.</p>
                     </div>
                     <div className="field-group">
+                      <label>Hero Summary</label>
+                      <textarea
+                        placeholder={recipe.description}
+                        value={block.data.summary || ''}
+                        onChange={(e) => updateBlockData(index, { ...block.data, summary: e.target.value })}
+                      />
+                      <p className="field-hint">Longer intro for the recipe page. Leave blank to reuse the card description.</p>
+                    </div>
+                    <div className="field-group block-field-wide">
                       <label>Hero Side Photo URL</label>
                       <input
                         type="text"
                         placeholder="https://..."
                         value={block.data.backgroundImage || ''}
                         onChange={(e) => updateBlockData(index, { ...block.data, backgroundImage: e.target.value })}
-                      />
-                    </div>
-                    <div className="field-group block-field-wide">
-                      <label>Summary</label>
-                      <textarea
-                        value={block.data.summary}
-                        onChange={(e) => updateBlockData(index, { ...block.data, summary: e.target.value })}
                       />
                     </div>
                   </div>
@@ -619,8 +698,28 @@ function AuthorEditor() {
             <input
               type="text"
               value={(recipe.tags || []).join(', ')}
-              onChange={(e) => updateMetadata('tags', e.target.value.split(',').map(s => s.trim()))}
+              onChange={(e) => updateMetadata('tags', parseTagInput(e.target.value))}
             />
+            <p className="field-hint">Use tags for search and filtering details beyond category.</p>
+            {(recipe.tags || []).filter(Boolean).length > 0 ? (
+              <div className="tag-chip-list" aria-label="Selected tags">
+                {(recipe.tags || []).filter(Boolean).map((tag) => (
+                  <button type="button" key={tag} onClick={() => removeTag(tag)}>
+                    {tag}
+                  </button>
+                ))}
+              </div>
+            ) : null}
+            <div className="tag-suggestions" aria-label="Suggested tags">
+              {knownTags
+                .filter((tag) => !(recipe.tags || []).some((selectedTag) => selectedTag.toLowerCase() === tag.toLowerCase()))
+                .slice(0, 12)
+                .map((tag) => (
+                  <button type="button" key={tag} onClick={() => addTag(tag)}>
+                    {tag}
+                  </button>
+                ))}
+            </div>
           </div>
         </section>
 
