@@ -73,7 +73,7 @@ const AuthorLayout = () => {
         <div className={`header-collapsible ${isMenuOpen ? 'is-open' : ''}`}>
           <nav className="site-nav">
             <NavLink to="/" end onClick={() => setIsMenuOpen(false)}>Dashboard</NavLink>
-            <a href={repository.pagesBaseUrl} onClick={() => setIsMenuOpen(false)}>View Live Site &nearr;</a>
+            <a href={repository.pagesBaseUrl} onClick={() => setIsMenuOpen(false)}>View Live Site</a>
             <button className="btn" style={{ padding: '8px 16px', fontSize: '12px' }} onClick={() => { logout(); setIsMenuOpen(false); }}>Logout</button>
           </nav>
         </div>
