@@ -445,12 +445,14 @@ function AuthorEditor() {
     setHasChanges(true)
   }
 
-  const assignLibraryPhoto = (asset) => {
-    assignUploadedPhoto(asset.url, photoPurpose)
+  const assignLibraryPhoto = (asset, purpose) => {
+    const purposeLabel = PHOTO_PURPOSE_OPTIONS.find((option) => option.value === purpose)?.label.toLowerCase()
+
+    assignUploadedPhoto(asset.url, purpose)
     setPhotoUpload({
       isUploading: false,
       error: '',
-      message: `Added ${asset.filename} as ${PHOTO_PURPOSE_OPTIONS.find((option) => option.value === photoPurpose)?.label.toLowerCase()}.`,
+      message: `Added ${asset.filename} as ${purposeLabel}.`,
     })
   }
 
@@ -892,9 +894,13 @@ function AuthorEditor() {
                     <strong>{asset.purpose}</strong>
                     <span>{formatBytes(asset.size)}</span>
                   </div>
-                  <button className="btn" type="button" onClick={() => assignLibraryPhoto(asset)}>
-                    Use as {PHOTO_PURPOSE_OPTIONS.find((option) => option.value === photoPurpose)?.label.toLowerCase()}
-                  </button>
+                  <div className="asset-library-actions" aria-label={`Use ${asset.filename} as`}>
+                    {PHOTO_PURPOSE_OPTIONS.map((option) => (
+                      <button type="button" key={option.value} onClick={() => assignLibraryPhoto(asset, option.value)}>
+                        {option.value}
+                      </button>
+                    ))}
+                  </div>
                 </article>
               ))}
             </div>

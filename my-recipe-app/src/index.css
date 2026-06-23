@@ -1137,7 +1137,7 @@ main {
   width: 100%;
 }
 
-.asset-library-item div {
+.asset-library-item > div:not(.asset-library-actions) {
   align-items: center;
   display: flex;
   gap: 8px;
@@ -1155,6 +1155,29 @@ main {
 
 .asset-library-item span {
   color: var(--text-muted);
+}
+
+.asset-library-actions {
+  display: grid;
+  gap: 6px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.asset-library-actions button {
+  background: #f9fafb;
+  border: 1px solid var(--line);
+  border-radius: 6px;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 800;
+  padding: 8px 6px;
+  text-transform: capitalize;
+}
+
+.asset-library-actions button:hover {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--accent-foreground);
 }
 
 .field-group label {
