@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useParams, Link, useNavigate } from 'react-router-dom'
 import { fetchRecipes, commitRecipe } from './services/github'
-import { uploadRecipeImage } from './services/assets'
+import { listRecipeImages, uploadRecipeImage } from './services/assets'
 import { validateRecipe } from '../shared/content/recipes/schema'
 import { createSlug } from '../shared/utils/slugs'
 import { resolvePublicAsset } from '../shared/utils/assets'
@@ -132,6 +132,18 @@ function parseTagInput(value) {
     .filter(Boolean)
 }
 
+function getRecipeAssetSlug(recipe, routeSlug) {
+  if (routeSlug) return routeSlug
+  if (recipe.slug) return recipe.slug
+
+  const titleSlug = createSlug(recipe.title)
+  if (titleSlug && titleSlug !== createSlug(DEFAULT_RECIPE_TITLE)) {
+    return titleSlug
+  }
+
+  return recipe.id
+}
+
 function AuthorEditor() {
   const { slug } = useParams()
   const navigate = useNavigate()
@@ -148,6 +160,12 @@ function AuthorEditor() {
   })
   const [knownTags, setKnownTags] = useState(DEFAULT_TAG_SUGGESTIONS)
   const [showAllTagSuggestions, setShowAllTagSuggestions] = useState(false)
+  const [assetLibrary, setAssetLibrary] = useState({
+    assets: [],
+    isLoading: false,
+    error: '',
+  })
+  const assetLibrarySlug = recipe ? getRecipeAssetSlug(recipe, slug) : ''
 
   useEffect(() => {
     fetchRecipes()
@@ -167,6 +185,30 @@ function AuthorEditor() {
         }
       })
   }, [slug])
+
+  useEffect(() => {
+    if (!assetLibrarySlug || !token) {
+      return
+    }
+
+    let isActive = true
+    setAssetLibrary((prev) => ({ ...prev, isLoading: true, error: '' }))
+    listRecipeImages({ recipeSlug: assetLibrarySlug, token })
+      .then((assets) => {
+        if (isActive) {
+          setAssetLibrary({ assets, isLoading: false, error: '' })
+        }
+      })
+      .catch((error) => {
+        if (isActive) {
+          setAssetLibrary((prev) => ({ ...prev, isLoading: false, error: error.message }))
+        }
+      })
+
+    return () => {
+      isActive = false
+    }
+  }, [assetLibrarySlug, token])
 
   if (isLoading) return <div style={{ padding: '80px', textAlign: 'center' }}><h2>Loading recipe data...</h2></div>
   if (!recipe) return <div style={{ padding: '80px', textAlign: 'center' }}><h2>Recipe not found.</h2><Link to="/">Back to Dashboard</Link></div>
@@ -297,6 +339,21 @@ function AuthorEditor() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  const refreshAssetLibrary = async () => {
+    if (!assetLibrarySlug || !token) {
+      return
+    }
+
+    setAssetLibrary((prev) => ({ ...prev, isLoading: true, error: '' }))
+
+    try {
+      const assets = await listRecipeImages({ recipeSlug: assetLibrarySlug, token })
+      setAssetLibrary({ assets, isLoading: false, error: '' })
+    } catch (error) {
+      setAssetLibrary((prev) => ({ ...prev, isLoading: false, error: error.message }))
+    }
+  }
+
   const addTag = (tag) => {
     const normalizedTag = tag.trim()
     if (!normalizedTag) return
@@ -321,15 +378,7 @@ function AuthorEditor() {
   }
 
   const getAssetRecipeSlug = () => {
-    if (slug) return slug
-    if (recipe.slug) return recipe.slug
-
-    const titleSlug = createSlug(recipe.title)
-    if (titleSlug && titleSlug !== createSlug(DEFAULT_RECIPE_TITLE)) {
-      return titleSlug
-    }
-
-    return recipe.id
+    return getRecipeAssetSlug(recipe, slug)
   }
 
   const assignUploadedPhoto = (url, purpose) => {
@@ -396,6 +445,15 @@ function AuthorEditor() {
     setHasChanges(true)
   }
 
+  const assignLibraryPhoto = (asset) => {
+    assignUploadedPhoto(asset.url, photoPurpose)
+    setPhotoUpload({
+      isUploading: false,
+      error: '',
+      message: `Added ${asset.filename} as ${PHOTO_PURPOSE_OPTIONS.find((option) => option.value === photoPurpose)?.label.toLowerCase()}.`,
+    })
+  }
+
   const handlePhotoUpload = async (event) => {
     const file = event.target.files?.[0]
     event.target.value = ''
@@ -421,6 +479,21 @@ function AuthorEditor() {
       })
 
       assignUploadedPhoto(result.url, photoPurpose)
+      setAssetLibrary((prev) => ({
+        assets: [
+          {
+            key: result.key || result.filename,
+            purpose: photoPurpose,
+            filename: result.filename,
+            url: result.url,
+            size: result.compressedSize,
+            uploaded: new Date().toISOString(),
+          },
+          ...prev.assets.filter((asset) => asset.url !== result.url),
+        ],
+        isLoading: false,
+        error: '',
+      }))
       setPhotoUpload({
         isUploading: false,
         error: '',
@@ -791,6 +864,41 @@ function AuthorEditor() {
             {photoUpload.message ? <p className="asset-upload-status">{photoUpload.message}</p> : null}
             {photoUpload.error ? <p className="asset-upload-status is-error">{photoUpload.error}</p> : null}
           </div>
+        </section>
+
+        <section className="inspector-card">
+          <div className="asset-library-header">
+            <div>
+              <h2>Asset Library</h2>
+              <p>{assetLibrarySlug}</p>
+            </div>
+            <button className="tool-btn" type="button" onClick={refreshAssetLibrary} disabled={assetLibrary.isLoading}>
+              Refresh
+            </button>
+          </div>
+
+          {assetLibrary.error ? <p className="asset-upload-status is-error">{assetLibrary.error}</p> : null}
+          {assetLibrary.isLoading ? <p className="asset-library-note">Loading photos...</p> : null}
+          {!assetLibrary.isLoading && assetLibrary.assets.length === 0 ? (
+            <p className="asset-library-note">Uploaded photos for this recipe will appear here.</p>
+          ) : null}
+
+          {assetLibrary.assets.length > 0 ? (
+            <div className="asset-library-grid">
+              {assetLibrary.assets.map((asset) => (
+                <article className="asset-library-item" key={asset.key}>
+                  <img src={asset.url} alt="" />
+                  <div>
+                    <strong>{asset.purpose}</strong>
+                    <span>{formatBytes(asset.size)}</span>
+                  </div>
+                  <button className="btn" type="button" onClick={() => assignLibraryPhoto(asset)}>
+                    Use as {PHOTO_PURPOSE_OPTIONS.find((option) => option.value === photoPurpose)?.label.toLowerCase()}
+                  </button>
+                </article>
+              ))}
+            </div>
+          ) : null}
         </section>
       </aside>
     </div>

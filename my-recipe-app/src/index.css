@@ -1095,6 +1095,68 @@ main {
   color: #b91c1c;
 }
 
+.asset-library-header {
+  align-items: flex-start;
+  display: flex;
+  gap: 12px;
+  justify-content: space-between;
+}
+
+.asset-library-header p,
+.asset-library-note {
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.4;
+}
+
+.asset-library-header p {
+  margin-top: 4px;
+  overflow-wrap: anywhere;
+}
+
+.asset-library-grid {
+  display: grid;
+  gap: 12px;
+}
+
+.asset-library-item {
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  display: grid;
+  gap: 10px;
+  overflow: hidden;
+  padding: 10px;
+}
+
+.asset-library-item img {
+  aspect-ratio: 4 / 3;
+  background: #f3f4f6;
+  border-radius: 6px;
+  height: auto;
+  object-fit: cover;
+  width: 100%;
+}
+
+.asset-library-item div {
+  align-items: center;
+  display: flex;
+  gap: 8px;
+  justify-content: space-between;
+}
+
+.asset-library-item strong,
+.asset-library-item span {
+  font-size: 12px;
+}
+
+.asset-library-item strong {
+  text-transform: capitalize;
+}
+
+.asset-library-item span {
+  color: var(--text-muted);
+}
+
 .field-group label {
   font-size: 12px;
   font-weight: 700;

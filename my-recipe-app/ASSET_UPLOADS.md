@@ -11,6 +11,7 @@ Browser resizes to 1600px max width
 Browser uploads at 80% quality
 Cloudflare Worker stores the file in R2
 Recipe JSON saves the public image URL
+Author dashboard can list and reuse existing recipe photos
 ```
 
 ## App Configuration
@@ -34,4 +35,4 @@ The starter Worker lives in `cloudflare/image-upload-worker.js`.
 4. Bind the `RECIPE_IMAGES` R2 bucket.
 5. Deploy with Wrangler.
 
-The Worker validates the same GitHub token used by the author dashboard against `ClaireCooks/ClaireCooks`, accepts compressed WebP or JPEG uploads, and caps uploads at 2 MB.
+The Worker validates the same GitHub token used by the author dashboard against `ClaireCooks/ClaireCooks`, accepts compressed WebP or JPEG uploads, caps uploads at 2 MB, and lists existing recipe assets with `GET ?recipeSlug=...`.

@@ -58,6 +58,38 @@ export async function uploadRecipeImage({ file, recipeSlug, purpose, token }) {
   }
 }
 
+export async function listRecipeImages({ recipeSlug, token }) {
+  if (!UPLOAD_URL) {
+    throw new Error('Photo library is not configured. Set VITE_ASSET_UPLOAD_URL to your image upload Worker URL.')
+  }
+
+  if (!token) {
+    throw new Error('Unlock the author workspace before viewing photos.')
+  }
+
+  const url = new URL(UPLOAD_URL)
+  url.searchParams.set('recipeSlug', recipeSlug)
+
+  const response = await fetch(url.toString(), {
+    headers: {
+      Authorization: `Bearer ${token}`,
+    },
+  })
+
+  let payload = null
+  try {
+    payload = await response.json()
+  } catch {
+    // Some upload services may return an empty body on errors.
+  }
+
+  if (!response.ok) {
+    throw new Error(payload?.error || `Photo library failed with status ${response.status}.`)
+  }
+
+  return payload?.assets || []
+}
+
 function createAssetFilename({ recipeSlug, purpose, type }) {
   const timestamp = new Date().toISOString().replace(/[-:]/g, '').replace(/\.\d{3}Z$/, 'Z')
   const safeSlug = sanitizePathPart(recipeSlug || 'recipe')

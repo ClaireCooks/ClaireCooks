@@ -11,12 +11,16 @@ export default {
       return new Response(null, { status: 204, headers: corsHeaders })
     }
 
-    if (request.method !== 'POST') {
-      return json({ error: 'Use POST to upload photos.' }, 405, corsHeaders)
+    if (!['GET', 'POST'].includes(request.method)) {
+      return json({ error: 'Use GET to list photos or POST to upload photos.' }, 405, corsHeaders)
     }
 
     try {
       await verifyGitHubToken(request)
+
+      if (request.method === 'GET') {
+        return listRecipeImages(request, env, corsHeaders)
+      }
 
       const formData = await request.formData()
       const file = formData.get('file')
@@ -65,6 +69,45 @@ export default {
   },
 }
 
+async function listRecipeImages(request, env, corsHeaders) {
+  if (!env.RECIPE_IMAGES) {
+    return json({ error: 'R2 binding RECIPE_IMAGES is not configured.' }, 500, corsHeaders)
+  }
+
+  if (!env.PUBLIC_ASSET_BASE_URL) {
+    return json({ error: 'PUBLIC_ASSET_BASE_URL is not configured.' }, 500, corsHeaders)
+  }
+
+  const url = new URL(request.url)
+  const recipeSlug = sanitizePathPart(url.searchParams.get('recipeSlug'))
+
+  if (!recipeSlug) {
+    return json({ error: 'recipeSlug is required.' }, 400, corsHeaders)
+  }
+
+  const prefix = `recipes/${recipeSlug}/`
+  const listResult = await env.RECIPE_IMAGES.list({ prefix, limit: 100 })
+  const publicBase = env.PUBLIC_ASSET_BASE_URL.replace(/\/$/, '')
+  const assets = listResult.objects
+    .filter((object) => isImageKey(object.key))
+    .map((object) => {
+      const keyParts = object.key.split('/')
+      const purpose = keyParts[2] || 'photo'
+
+      return {
+        key: object.key,
+        purpose,
+        filename: keyParts.at(-1) || object.key,
+        url: `${publicBase}/${object.key}`,
+        size: object.size,
+        uploaded: object.uploaded,
+      }
+    })
+    .sort((a, b) => new Date(b.uploaded).getTime() - new Date(a.uploaded).getTime())
+
+  return json({ assets }, 200, corsHeaders)
+}
+
 async function verifyGitHubToken(request) {
   const authorization = request.headers.get('Authorization') || ''
   const token = authorization.replace(/^Bearer\s+/i, '').trim()
@@ -99,10 +142,14 @@ function createCorsHeaders(env) {
 
   return {
     'Access-Control-Allow-Origin': allowedOrigin,
-    'Access-Control-Allow-Methods': 'POST, OPTIONS',
+    'Access-Control-Allow-Methods': 'GET, POST, OPTIONS',
     'Access-Control-Allow-Headers': 'Authorization, Content-Type',
     'Access-Control-Max-Age': '86400',
   }
+}
+
+function isImageKey(key) {
+  return /\.(?:webp|jpe?g)$/i.test(key)
 }
 
 function json(payload, status, headers) {
