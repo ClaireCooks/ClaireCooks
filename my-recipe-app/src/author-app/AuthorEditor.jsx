@@ -5,6 +5,7 @@ import { listRecipeImages, uploadRecipeImage } from './services/assets'
 import { validateRecipe } from '../shared/content/recipes/schema'
 import { createSlug } from '../shared/utils/slugs'
 import { resolvePublicAsset } from '../shared/utils/assets'
+import RecipeRenderer from '../shared/renderer/RecipeRenderer'
 import { formatBytes } from './services/imageCompression'
 import { useAuth } from './useAuth'
 
@@ -160,6 +161,7 @@ function AuthorEditor() {
   })
   const [knownTags, setKnownTags] = useState(DEFAULT_TAG_SUGGESTIONS)
   const [showAllTagSuggestions, setShowAllTagSuggestions] = useState(false)
+  const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const [assetLibrary, setAssetLibrary] = useState({
     assets: [],
     isLoading: false,
@@ -539,6 +541,7 @@ function AuthorEditor() {
     ? availableTagSuggestions
     : availableTagSuggestions.slice(0, TAG_SUGGESTION_COLLAPSED_COUNT)
   const hasHiddenTagSuggestions = availableTagSuggestions.length > TAG_SUGGESTION_COLLAPSED_COUNT
+  const previewRecipe = prepareRecipeForSave(recipe.status || 'draft')
 
   return (
     <div className="author-editor-layout">
@@ -572,7 +575,12 @@ function AuthorEditor() {
             <p className="eyebrow">Authoring</p>
             <h1>{recipe.title || 'Untitled Recipe'}</h1>
           </div>
-          {hasChanges ? <span className="editor-status">Unsaved</span> : <span className="editor-status is-saved">Saved</span>}
+          <div className="recipe-studio-actions">
+            <button className="btn" type="button" onClick={() => setIsPreviewOpen(true)}>
+              Preview Recipe
+            </button>
+            {hasChanges ? <span className="editor-status">Unsaved</span> : <span className="editor-status is-saved">Saved</span>}
+          </div>
         </header>
 
         <article className="recipe-paper">
@@ -906,6 +914,25 @@ function AuthorEditor() {
           ) : null}
         </section>
       </aside>
+
+      {isPreviewOpen ? (
+        <div className="recipe-preview-overlay" role="dialog" aria-modal="true" aria-label="Recipe preview">
+          <div className="recipe-preview-shell">
+            <header className="recipe-preview-toolbar">
+              <div>
+                <p className="eyebrow">Draft Preview</p>
+                <h2>{previewRecipe.title}</h2>
+              </div>
+              <button className="btn" type="button" onClick={() => setIsPreviewOpen(false)}>
+                Close Preview
+              </button>
+            </header>
+            <div className="recipe-preview-content">
+              <RecipeRenderer recipe={previewRecipe} />
+            </div>
+          </div>
+        </div>
+      ) : null}
     </div>
   )
 }
