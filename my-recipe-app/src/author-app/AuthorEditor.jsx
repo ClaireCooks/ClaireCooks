@@ -595,11 +595,75 @@ function AuthorEditor() {
                 />
                 <p className="field-hint">Short catalog blurb shown on recipe cards and search results.</p>
               </div>
+
+              <div className="field-group">
+                <label>Category</label>
+                <input
+                  type="text"
+                  list="recipe-category-options"
+                  placeholder="Dinner, Lunch, Dessert..."
+                  value={recipe.category}
+                  onChange={(e) => updateMetadata('category', e.target.value)}
+                />
+                <datalist id="recipe-category-options">
+                  {CATEGORY_OPTIONS.map((category) => (
+                    <option value={category} key={category} />
+                  ))}
+                </datalist>
+                <p className="field-hint">Primary catalog grouping. Tags can handle the extra details.</p>
+              </div>
+
+              <div className="field-group">
+                <label>Tags</label>
+                <input
+                  type="text"
+                  value={(recipe.tags || []).join(', ')}
+                  onChange={(e) => updateMetadata('tags', parseTagInput(e.target.value))}
+                />
+                <p className="field-hint">Use tags for search and filtering details beyond category.</p>
+                {selectedTags.length > 0 ? (
+                  <div className="tag-chip-list" aria-label="Selected tags">
+                    {selectedTags.map((tag) => (
+                      <button type="button" key={tag} onClick={() => removeTag(tag)}>
+                        {tag}
+                      </button>
+                    ))}
+                  </div>
+                ) : null}
+                <div className="tag-suggestions" aria-label="Suggested tags">
+                  {visibleTagSuggestions.map((tag) => (
+                    <button type="button" key={tag} onClick={() => addTag(tag)}>
+                      {tag}
+                    </button>
+                  ))}
+                </div>
+                {hasHiddenTagSuggestions ? (
+                  <button
+                    className="tag-suggestions-toggle"
+                    type="button"
+                    onClick={() => setShowAllTagSuggestions((isShowing) => !isShowing)}
+                  >
+                    {showAllTagSuggestions ? 'Show fewer tags' : `Show ${availableTagSuggestions.length - TAG_SUGGESTION_COLLAPSED_COUNT} more tags`}
+                  </button>
+                ) : null}
+              </div>
             </div>
 
-            <div className="recipe-paper-image">
-              {recipe.image ? <img src={resolvePublicAsset(recipe.image)} alt="" /> : null}
-              <span>{recipe.category}</span>
+            <div className="recipe-paper-media">
+              <div className="recipe-paper-image">
+                {recipe.image ? <img src={resolvePublicAsset(recipe.image)} alt="" /> : null}
+                <span>{recipe.category}</span>
+              </div>
+              <div className="field-group">
+                <label>Thumbnail URL</label>
+                <input
+                  type="text"
+                  placeholder="/recipe-art/crepes.svg or https://..."
+                  value={recipe.image}
+                  onChange={(e) => updateMetadata('image', e.target.value)}
+                />
+                <p className="field-hint">Image shown on recipe cards and used as the hero fallback.</p>
+              </div>
             </div>
           </section>
 
@@ -775,71 +839,6 @@ function AuthorEditor() {
           <button className="btn btn-primary" type="button" onClick={() => handleSave('published')} disabled={isSaving}>
             {isSaving ? 'Publishing...' : 'Publish'}
           </button>
-        </section>
-
-        <section className="inspector-card">
-          <h2>Recipe Card</h2>
-          <div className="field-group">
-            <label>Thumbnail URL</label>
-            <input
-              type="text"
-              placeholder="/recipe-art/crepes.svg or https://..."
-              value={recipe.image}
-              onChange={(e) => updateMetadata('image', e.target.value)}
-            />
-          </div>
-          <div className="inspector-thumbnail">
-            {recipe.image ? <img src={resolvePublicAsset(recipe.image)} alt="" /> : null}
-          </div>
-          <div className="field-group">
-            <label>Category</label>
-            <input
-              type="text"
-              list="recipe-category-options"
-              placeholder="Dinner, Lunch, Dessert..."
-              value={recipe.category}
-              onChange={(e) => updateMetadata('category', e.target.value)}
-            />
-            <datalist id="recipe-category-options">
-              {CATEGORY_OPTIONS.map((category) => (
-                <option value={category} key={category} />
-              ))}
-            </datalist>
-          </div>
-          <div className="field-group">
-            <label>Tags</label>
-            <input
-              type="text"
-              value={(recipe.tags || []).join(', ')}
-              onChange={(e) => updateMetadata('tags', parseTagInput(e.target.value))}
-            />
-            <p className="field-hint">Use tags for search and filtering details beyond category.</p>
-            {selectedTags.length > 0 ? (
-              <div className="tag-chip-list" aria-label="Selected tags">
-                {selectedTags.map((tag) => (
-                  <button type="button" key={tag} onClick={() => removeTag(tag)}>
-                    {tag}
-                  </button>
-                ))}
-              </div>
-            ) : null}
-            <div className="tag-suggestions" aria-label="Suggested tags">
-              {visibleTagSuggestions.map((tag) => (
-                <button type="button" key={tag} onClick={() => addTag(tag)}>
-                  {tag}
-                </button>
-              ))}
-            </div>
-            {hasHiddenTagSuggestions ? (
-              <button
-                className="tag-suggestions-toggle"
-                type="button"
-                onClick={() => setShowAllTagSuggestions((isShowing) => !isShowing)}
-              >
-                {showAllTagSuggestions ? 'Show fewer tags' : `Show ${availableTagSuggestions.length - TAG_SUGGESTION_COLLAPSED_COUNT} more tags`}
-              </button>
-            ) : null}
-          </div>
         </section>
 
         <section className="inspector-card">

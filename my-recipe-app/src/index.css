@@ -905,6 +905,12 @@ main {
   gap: 18px;
 }
 
+.recipe-paper-media {
+  align-content: start;
+  display: grid;
+  gap: 16px;
+}
+
 .field-group-title input {
   background: transparent;
   border: 0;
