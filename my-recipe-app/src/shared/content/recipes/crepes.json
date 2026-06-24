@@ -1,11 +1,11 @@
 {
   "id": "recipe-crepes",
-  "title": "Weekend Crepes",
+  "title": "Crepes",
   "slug": "crepes",
   "description": "A lightly sweet crepe base for breakfast spreads, fruit fillings, or savory brunch plates.",
-  "image": "/recipe-art/crepes.svg",
+  "image": "https://pub-b219213e36074f04bcc0424ce16a0ffb.r2.dev/recipes/crepes/card/crepes-card-20260624t020950z.webp",
   "category": "Breakfast",
-  "status": "draft",
+  "status": "published",
   "difficulty": "Easy",
   "tags": [
     "breakfast",
@@ -65,9 +65,9 @@
           "Whisk the flour, eggs, and milk together in a mixing bowl until smooth.",
           "Let the batter rest for 10 minutes while a nonstick skillet warms over medium heat.",
           "Pour a thin layer of batter into the pan, swirling immediately to coat the bottom evenly. Cook until the edges begin to lift and the underside is lightly golden.",
-          "Flip the crepe and cook for 15–30 seconds on the second side. Transfer to a plate and repeat with the remaining batter.",
+          "Flip the crepe and cook for 15â30 seconds on the second side. Transfer to a plate and repeat with the remaining batter.",
           "Once the crepes have cooled slightly, add your desired filling to one half of each crepe. Fold the crepe in half, then fold it in half again to create a triangle. Alternatively, roll the crepe around the filling.",
-          "Serve immediately with your favorite sweet or savory fillings. For a sweet option, fill the crepes with Greek yogurt and top with fresh berries and chocolate chips. For a savory variation, try scrambled eggs, cottage cheese, bacon, fresh herbs such as parsley, sautéed vegetables, or your favorite cheeses. The possibilities are endless!"
+          "Serve immediately with your favorite sweet or savory fillings. For a sweet option, fill the crepes with Greek yogurt and top with fresh berries and chocolate chips. For a savory variation, try scrambled eggs, cottage cheese, bacon, fresh herbs such as parsley, sautÃ©ed vegetables, or your favorite cheeses. The possibilities are endless!"
         ]
       }
     }
