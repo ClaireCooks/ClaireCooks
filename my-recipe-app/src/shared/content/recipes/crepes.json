@@ -2,18 +2,18 @@
   "id": "recipe-crepes",
   "title": "Weekend Crepes",
   "slug": "crepes",
-  "description": "A tender, lightly sweet crepe base for breakfast spreads, fruit fillings, or savory brunch plates.",
+  "description": "A lightly sweet crepe base for breakfast spreads, fruit fillings, or savory brunch plates.",
   "image": "/recipe-art/crepes.svg",
   "category": "Breakfast",
-  "status": "published",
+  "status": "draft",
   "difficulty": "Easy",
   "tags": [
-    "brunch",
-    "make-ahead",
-    "vegetarian"
+    "breakfast",
+    "dessert",
+    "brunch"
   ],
   "prepTime": "10 min",
-  "cookTime": "20 min",
+  "cookTime": "10 min",
   "servings": 4,
   "createdAt": "2026-06-11",
   "updatedAt": "2026-06-11",
@@ -22,7 +22,8 @@
       "type": "hero",
       "data": {
         "kicker": "Breakfast",
-        "summary": "A tender, lightly sweet crepe base for breakfast spreads, fruit fillings, or savory brunch plates."
+        "summary": "A tender, lightly sweet crepe base for breakfast spreads, fruit fillings, or savory brunch plates.",
+        "backgroundImage": ""
       }
     },
     {
@@ -47,9 +48,9 @@
       "type": "ingredients",
       "data": {
         "items": [
-          "1 cup all-purpose flour",
-          "2 large eggs",
-          "1 1/2 cups milk",
+          "3/4 cup all purpose gluten free flour (I recommend King Arthur's)",
+          "2 eggs",
+          "1 cup milk (substitute almond milk for a dairy free alternative)",
           "1 tablespoon melted butter",
           "1 teaspoon sugar",
           "1/4 teaspoon fine salt"
@@ -61,24 +62,13 @@
       "type": "instructions",
       "data": {
         "steps": [
-          "Whisk the flour, sugar, and salt in a mixing bowl.",
-          "Add the eggs and half the milk, then whisk until smooth.",
-          "Whisk in the remaining milk and melted butter.",
-          "Rest the batter for 10 minutes while a nonstick pan warms over medium heat.",
-          "Pour a thin layer of batter into the pan, swirl, and cook until the edges lift.",
-          "Flip and cook briefly on the second side, then repeat with the remaining batter."
+          "Whisk the flour, eggs, and milk together in a mixing bowl until smooth.",
+          "Let the batter rest for 10 minutes while a nonstick skillet warms over medium heat.",
+          "Pour a thin layer of batter into the pan, swirling immediately to coat the bottom evenly. Cook until the edges begin to lift and the underside is lightly golden.",
+          "Flip the crepe and cook for 15–30 seconds on the second side. Transfer to a plate and repeat with the remaining batter.",
+          "Once the crepes have cooled slightly, add your desired filling to one half of each crepe. Fold the crepe in half, then fold it in half again to create a triangle. Alternatively, roll the crepe around the filling.",
+          "Serve immediately with your favorite sweet or savory fillings. For a sweet option, fill the crepes with Greek yogurt and top with fresh berries and chocolate chips. For a savory variation, try scrambled eggs, cottage cheese, bacon, fresh herbs such as parsley, sautéed vegetables, or your favorite cheeses. The possibilities are endless!"
         ]
-      }
-    },
-    {
-      "type": "nutrition",
-      "data": {
-        "items": [
-          "Approx. 185 calories per serving",
-          "7g protein",
-          "7g fat"
-        ],
-        "image": ""
       }
     }
   ]
