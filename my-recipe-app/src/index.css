@@ -1033,6 +1033,48 @@ main {
   grid-column: 1 / -1;
 }
 
+.component-picker {
+  border-top: 1px solid var(--line);
+  display: grid;
+  gap: 18px;
+  padding-top: 28px;
+}
+
+.component-picker-grid {
+  display: grid;
+  gap: 12px;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+}
+
+.component-picker-grid button {
+  background: #f9fafb;
+  border: 1px solid var(--line);
+  border-radius: 8px;
+  cursor: pointer;
+  display: grid;
+  gap: 6px;
+  min-height: 92px;
+  padding: 16px;
+  text-align: left;
+  transition: background 0.2s ease, border-color 0.2s ease, transform 0.2s ease;
+}
+
+.component-picker-grid button:hover {
+  background: #fff;
+  border-color: var(--accent);
+  transform: translateY(-1px);
+}
+
+.component-picker-grid strong {
+  font-size: 15px;
+}
+
+.component-picker-grid span {
+  color: var(--text-muted);
+  font-size: 12px;
+  line-height: 1.35;
+}
+
 .inspector-card {
   background: #fff;
   border: 1px solid var(--line);
@@ -1960,7 +2002,8 @@ main {
 
   .recipe-paper-hero,
   .recipe-quick-fields,
-  .block-field-grid {
+  .block-field-grid,
+  .component-picker-grid {
     grid-template-columns: 1fr;
   }
 

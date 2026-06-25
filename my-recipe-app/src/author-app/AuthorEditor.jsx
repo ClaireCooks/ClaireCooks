@@ -30,6 +30,16 @@ const PHOTO_PURPOSE_OPTIONS = [
   { value: 'gallery', label: 'Gallery photo' },
 ]
 
+const BLOCK_OPTIONS = [
+  { type: 'hero', label: 'Hero', description: 'Intro copy and feature image' },
+  { type: 'ingredients', label: 'Ingredients', description: 'Ingredient list with optional side photo' },
+  { type: 'instructions', label: 'Instructions', description: 'Step-by-step cooking flow' },
+  { type: 'media', label: 'Media', description: 'Single image or video feature' },
+  { type: 'gallery', label: 'Gallery', description: 'Multiple photos with caption' },
+  { type: 'notes', label: 'Notes', description: 'Tips, swaps, and serving ideas' },
+  { type: 'nutrition', label: 'Nutrition', description: 'Nutrition or dietary details' },
+]
+
 const DEFAULT_RECIPE_TITLE = 'New Recipe'
 const DEFAULT_TAG_SUGGESTIONS = [
   '30-minute',
@@ -560,10 +570,10 @@ function AuthorEditor() {
         </nav>
 
         <div className="rail-section">
-          <p>Add Block</p>
-          {['hero', 'media', 'gallery', 'ingredients', 'instructions', 'notes', 'nutrition'].map((type) => (
-            <button key={type} type="button" onClick={() => addBlock(type)}>
-              {type}
+          <p>Add Component</p>
+          {BLOCK_OPTIONS.map((option) => (
+            <button key={option.type} type="button" onClick={() => addBlock(option.type)}>
+              {option.label}
             </button>
           ))}
         </div>
@@ -827,6 +837,21 @@ function AuthorEditor() {
                 )}
               </div>
             ))}
+          </section>
+
+          <section className="component-picker" aria-label="Add component">
+            <div className="recipe-section-heading">
+              <p className="eyebrow">Add Component</p>
+              <h2>Build out the recipe</h2>
+            </div>
+            <div className="component-picker-grid">
+              {BLOCK_OPTIONS.map((option) => (
+                <button type="button" key={option.type} onClick={() => addBlock(option.type)}>
+                  <strong>{option.label}</strong>
+                  <span>{option.description}</span>
+                </button>
+              ))}
+            </div>
           </section>
         </article>
       </main>
