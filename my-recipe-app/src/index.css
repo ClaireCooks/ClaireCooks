@@ -872,51 +872,6 @@ main {
   justify-content: flex-end;
 }
 
-.component-selector {
-  display: grid;
-  gap: 12px;
-  margin: 0 auto 24px;
-  max-width: 980px;
-}
-
-.component-selector-toggle {
-  align-items: center;
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  cursor: pointer;
-  display: flex;
-  gap: 12px;
-  justify-content: space-between;
-  padding: 12px 14px;
-  text-align: left;
-}
-
-.component-selector-toggle:hover,
-.component-selector.is-open .component-selector-toggle {
-  border-color: var(--accent);
-}
-
-.component-selector-toggle span {
-  font-size: 13px;
-  font-weight: 800;
-}
-
-.component-selector-toggle strong {
-  color: var(--text-muted);
-  font-size: 12px;
-  text-transform: uppercase;
-}
-
-.component-selector-body {
-  background: #fff;
-  border: 1px solid var(--line);
-  border-radius: 8px;
-  display: grid;
-  gap: 12px;
-  padding: 14px;
-}
-
 .editor-status {
   background: #fff7ed;
   border: 1px solid #fed7aa;
@@ -2065,14 +2020,6 @@ main {
   .recipe-preview-toolbar {
     align-items: stretch;
     flex-direction: column;
-    width: 100%;
-  }
-
-  .component-selector {
-    margin-bottom: 18px;
-  }
-
-  .component-selector-toggle {
     width: 100%;
   }
 
