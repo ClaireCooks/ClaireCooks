@@ -355,6 +355,11 @@ function AuthorEditor() {
     document.getElementById(id)?.scrollIntoView({ behavior: 'smooth', block: 'start' })
   }
 
+  const openComponentSelector = () => {
+    setIsComponentPickerOpen(true)
+    document.getElementById('component-selector')?.scrollIntoView({ behavior: 'smooth', block: 'start' })
+  }
+
   const refreshAssetLibrary = async () => {
     if (!assetLibrarySlug || !token) {
       return
@@ -596,6 +601,49 @@ function AuthorEditor() {
             {hasChanges ? <span className="editor-status">Unsaved</span> : <span className="editor-status is-saved">Saved</span>}
           </div>
         </header>
+
+        <section className={`component-selector${isComponentPickerOpen ? ' is-open' : ''}`} id="component-selector">
+          <button
+            className="component-selector-toggle"
+            type="button"
+            aria-expanded={isComponentPickerOpen}
+            onClick={() => setIsComponentPickerOpen((isOpen) => !isOpen)}
+          >
+            <span>Component Selector</span>
+            <strong>{isComponentPickerOpen ? 'Hide' : 'Show'}</strong>
+          </button>
+
+          {isComponentPickerOpen ? (
+            <div className="component-selector-body">
+              <select
+                className="component-picker-select"
+                value=""
+                aria-label="Choose component"
+                onChange={(event) => {
+                  if (event.target.value) {
+                    addBlock(event.target.value, { closePicker: true })
+                  }
+                }}
+              >
+                <option value="">Choose component...</option>
+                {BLOCK_OPTIONS.map((option) => (
+                  <option value={option.type} key={option.type}>
+                    {option.label}
+                  </option>
+                ))}
+              </select>
+
+              <div className="component-picker-grid">
+                {BLOCK_OPTIONS.map((option) => (
+                  <button type="button" key={option.type} onClick={() => addBlock(option.type, { closePicker: true })}>
+                    <strong>{option.label}</strong>
+                    <span>{option.description}</span>
+                  </button>
+                ))}
+              </div>
+            </div>
+          ) : null}
+        </section>
 
         <article className="recipe-paper">
           <section className="recipe-paper-hero" id="recipe-basics">
@@ -845,45 +893,13 @@ function AuthorEditor() {
 
           <section className="component-picker" aria-label="Add component">
             <button
-              className={`component-dropzone${isComponentPickerOpen ? ' is-open' : ''}`}
+              className="component-dropzone"
               type="button"
-              aria-expanded={isComponentPickerOpen}
-              onClick={() => setIsComponentPickerOpen((isOpen) => !isOpen)}
+              onClick={openComponentSelector}
             >
-              <strong>{isComponentPickerOpen ? 'Choose a Component' : 'Add Component'}</strong>
-              <span>{isComponentPickerOpen ? 'Select the block you want to add next.' : 'Add ingredients, steps, photos, notes, or nutrition.'}</span>
+              <strong>Add Component</strong>
+              <span>Open the selector to add ingredients, steps, photos, notes, or nutrition.</span>
             </button>
-
-            {isComponentPickerOpen ? (
-              <>
-                <select
-                  className="component-picker-select"
-                  value=""
-                  aria-label="Choose component"
-                  onChange={(event) => {
-                    if (event.target.value) {
-                      addBlock(event.target.value, { closePicker: true })
-                    }
-                  }}
-                >
-                  <option value="">Choose component...</option>
-                  {BLOCK_OPTIONS.map((option) => (
-                    <option value={option.type} key={option.type}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-
-                <div className="component-picker-grid">
-                  {BLOCK_OPTIONS.map((option) => (
-                    <button type="button" key={option.type} onClick={() => addBlock(option.type, { closePicker: true })}>
-                      <strong>{option.label}</strong>
-                      <span>{option.description}</span>
-                    </button>
-                  ))}
-                </div>
-              </>
-            ) : null}
           </section>
         </article>
       </main>
