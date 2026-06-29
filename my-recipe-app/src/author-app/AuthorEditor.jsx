@@ -173,6 +173,7 @@ function AuthorEditor() {
   const [showAllTagSuggestions, setShowAllTagSuggestions] = useState(false)
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
   const [isComponentPickerOpen, setIsComponentPickerOpen] = useState(false)
+  const [isRailComponentsOpen, setIsRailComponentsOpen] = useState(false)
   const [assetLibrary, setAssetLibrary] = useState({
     assets: [],
     isLoading: false,
@@ -573,13 +574,22 @@ function AuthorEditor() {
           <button type="button" onClick={() => scrollToSection('recipe-publish')}>Publish</button>
         </nav>
 
-        <div className="rail-section">
-          <p>Add Component</p>
-          {BLOCK_OPTIONS.map((option) => (
-            <button key={option.type} type="button" onClick={() => addBlock(option.type)}>
-              {option.label}
-            </button>
-          ))}
+        <div className={`rail-section rail-components${isRailComponentsOpen ? ' is-open' : ''}`}>
+          <button
+            className="rail-section-toggle"
+            type="button"
+            aria-expanded={isRailComponentsOpen}
+            onClick={() => setIsRailComponentsOpen((isOpen) => !isOpen)}
+          >
+            Add Component
+          </button>
+          <div className="rail-section-body">
+            {BLOCK_OPTIONS.map((option) => (
+              <button key={option.type} type="button" onClick={() => addBlock(option.type)}>
+                {option.label}
+              </button>
+            ))}
+          </div>
         </div>
       </aside>
 

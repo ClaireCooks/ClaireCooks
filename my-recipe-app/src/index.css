@@ -809,7 +809,8 @@ main {
 }
 
 .rail-brand span,
-.rail-section p {
+.rail-section p,
+.rail-section-toggle {
   color: var(--text-muted);
   font-size: 11px;
   font-weight: 800;
@@ -827,8 +828,22 @@ main {
   gap: 8px;
 }
 
+.rail-section-body {
+  display: grid;
+  gap: 8px;
+}
+
+.rail-section-toggle {
+  background: transparent;
+  border: 0;
+  cursor: default;
+  padding: 0;
+  text-align: left;
+}
+
 .rail-section a,
-.rail-section button {
+.rail-section > button:not(.rail-section-toggle),
+.rail-section-body button {
   border: 0;
   border-radius: var(--radius-sm);
   background: transparent;
@@ -842,7 +857,8 @@ main {
 }
 
 .rail-section a:hover,
-.rail-section button:hover {
+.rail-section > button:not(.rail-section-toggle):hover,
+.rail-section-body button:hover {
   background: #f3f4f6;
 }
 
@@ -2004,6 +2020,38 @@ main {
 
   .rail-section {
     grid-template-columns: 1fr 1fr;
+  }
+
+  .rail-components {
+    grid-template-columns: 1fr;
+  }
+
+  .rail-components .rail-section-toggle {
+    border: 1px solid var(--line);
+    border-radius: 8px;
+    color: var(--text);
+    cursor: pointer;
+    padding: 12px 14px;
+  }
+
+  .rail-components .rail-section-toggle::after {
+    content: 'Show';
+    color: var(--text-muted);
+    float: right;
+    font-size: 11px;
+  }
+
+  .rail-components.is-open .rail-section-toggle::after {
+    content: 'Hide';
+  }
+
+  .rail-components .rail-section-body {
+    display: none;
+    grid-template-columns: 1fr 1fr;
+  }
+
+  .rail-components.is-open .rail-section-body {
+    display: grid;
   }
 
   .recipe-workspace {
