@@ -1071,6 +1071,10 @@ main {
   line-height: 1.4;
 }
 
+.component-picker-select {
+  display: none;
+}
+
 .component-picker-grid {
   display: grid;
   gap: 12px;
@@ -2033,9 +2037,20 @@ main {
 
   .recipe-paper-hero,
   .recipe-quick-fields,
-  .block-field-grid,
-  .component-picker-grid {
+  .block-field-grid {
     grid-template-columns: 1fr;
+  }
+
+  .component-picker-select {
+    background: #f9fafb;
+    border: 1px solid var(--line);
+    display: block;
+    padding: 12px 16px;
+    width: 100%;
+  }
+
+  .component-picker-grid {
+    display: none;
   }
 
   .recipe-paper-image {

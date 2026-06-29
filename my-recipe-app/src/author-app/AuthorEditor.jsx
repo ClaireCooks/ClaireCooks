@@ -855,14 +855,34 @@ function AuthorEditor() {
             </button>
 
             {isComponentPickerOpen ? (
-              <div className="component-picker-grid">
-                {BLOCK_OPTIONS.map((option) => (
-                  <button type="button" key={option.type} onClick={() => addBlock(option.type, { closePicker: true })}>
-                    <strong>{option.label}</strong>
-                    <span>{option.description}</span>
-                  </button>
-                ))}
-              </div>
+              <>
+                <select
+                  className="component-picker-select"
+                  value=""
+                  aria-label="Choose component"
+                  onChange={(event) => {
+                    if (event.target.value) {
+                      addBlock(event.target.value, { closePicker: true })
+                    }
+                  }}
+                >
+                  <option value="">Choose component...</option>
+                  {BLOCK_OPTIONS.map((option) => (
+                    <option value={option.type} key={option.type}>
+                      {option.label}
+                    </option>
+                  ))}
+                </select>
+
+                <div className="component-picker-grid">
+                  {BLOCK_OPTIONS.map((option) => (
+                    <button type="button" key={option.type} onClick={() => addBlock(option.type, { closePicker: true })}>
+                      <strong>{option.label}</strong>
+                      <span>{option.description}</span>
+                    </button>
+                  ))}
+                </div>
+              </>
             ) : null}
           </section>
         </article>
