@@ -1052,43 +1052,8 @@ main {
 .component-picker {
   border-top: 1px solid var(--line);
   display: grid;
-  gap: 14px;
+  gap: 18px;
   padding-top: 28px;
-}
-
-.component-dropzone {
-  align-items: center;
-  background: #f9fafb;
-  border: 1px dashed #cbd5e1;
-  border-radius: 8px;
-  cursor: pointer;
-  display: grid;
-  gap: 6px;
-  justify-items: center;
-  min-height: 128px;
-  padding: 20px 14px;
-  text-align: center;
-  transition: border-color 0.2s ease, background 0.2s ease;
-}
-
-.component-dropzone:hover,
-.component-dropzone.is-open {
-  background: #fff;
-  border-color: var(--accent);
-}
-
-.component-dropzone strong {
-  font-size: 15px;
-}
-
-.component-dropzone span {
-  color: var(--text-muted);
-  font-size: 12px;
-  line-height: 1.4;
-}
-
-.component-picker-select {
-  display: none;
 }
 
 .component-picker-grid {
@@ -2085,20 +2050,9 @@ main {
 
   .recipe-paper-hero,
   .recipe-quick-fields,
-  .block-field-grid {
-    grid-template-columns: 1fr;
-  }
-
-  .component-picker-select {
-    background: #f9fafb;
-    border: 1px solid var(--line);
-    display: block;
-    padding: 12px 16px;
-    width: 100%;
-  }
-
+  .block-field-grid,
   .component-picker-grid {
-    display: none;
+    grid-template-columns: 1fr;
   }
 
   .recipe-paper-image {

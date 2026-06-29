@@ -172,7 +172,6 @@ function AuthorEditor() {
   const [knownTags, setKnownTags] = useState(DEFAULT_TAG_SUGGESTIONS)
   const [showAllTagSuggestions, setShowAllTagSuggestions] = useState(false)
   const [isPreviewOpen, setIsPreviewOpen] = useState(false)
-  const [isComponentPickerOpen, setIsComponentPickerOpen] = useState(false)
   const [isRailComponentsOpen, setIsRailComponentsOpen] = useState(false)
   const [assetLibrary, setAssetLibrary] = useState({
     assets: [],
@@ -232,7 +231,7 @@ function AuthorEditor() {
     setHasChanges(true)
   }
 
-  const addBlock = (type, options = {}) => {
+  const addBlock = (type) => {
     const defaultData = {
       hero: { kicker: '', summary: '', backgroundImage: '' },
       ingredients: { items: ['New ingredient'], image: '' },
@@ -248,9 +247,6 @@ function AuthorEditor() {
       blocks: [...prev.blocks, { type, data: defaultData[type] || {} }],
     }))
     setHasChanges(true)
-    if (options.closePicker) {
-      setIsComponentPickerOpen(false)
-    }
   }
 
   const removeBlock = (index) => {
@@ -854,46 +850,18 @@ function AuthorEditor() {
           </section>
 
           <section className="component-picker" aria-label="Add component">
-            <button
-              className={`component-dropzone${isComponentPickerOpen ? ' is-open' : ''}`}
-              type="button"
-              aria-expanded={isComponentPickerOpen}
-              onClick={() => setIsComponentPickerOpen((isOpen) => !isOpen)}
-            >
-              <strong>{isComponentPickerOpen ? 'Choose a Component' : 'Add Component'}</strong>
-              <span>{isComponentPickerOpen ? 'Select the block you want to add next.' : 'Add ingredients, steps, photos, notes, or nutrition.'}</span>
-            </button>
-
-            {isComponentPickerOpen ? (
-              <>
-                <select
-                  className="component-picker-select"
-                  value=""
-                  aria-label="Choose component"
-                  onChange={(event) => {
-                    if (event.target.value) {
-                      addBlock(event.target.value, { closePicker: true })
-                    }
-                  }}
-                >
-                  <option value="">Choose component...</option>
-                  {BLOCK_OPTIONS.map((option) => (
-                    <option value={option.type} key={option.type}>
-                      {option.label}
-                    </option>
-                  ))}
-                </select>
-
-                <div className="component-picker-grid">
-                  {BLOCK_OPTIONS.map((option) => (
-                    <button type="button" key={option.type} onClick={() => addBlock(option.type, { closePicker: true })}>
-                      <strong>{option.label}</strong>
-                      <span>{option.description}</span>
-                    </button>
-                  ))}
-                </div>
-              </>
-            ) : null}
+            <div className="recipe-section-heading">
+              <p className="eyebrow">Add Component</p>
+              <h2>Build out the recipe</h2>
+            </div>
+            <div className="component-picker-grid">
+              {BLOCK_OPTIONS.map((option) => (
+                <button type="button" key={option.type} onClick={() => addBlock(option.type)}>
+                  <strong>{option.label}</strong>
+                  <span>{option.description}</span>
+                </button>
+              ))}
+            </div>
           </section>
         </article>
       </main>
