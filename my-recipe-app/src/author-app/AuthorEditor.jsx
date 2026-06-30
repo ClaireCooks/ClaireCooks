@@ -106,15 +106,15 @@ function createEmptyRecipe() {
       {
         type: 'ingredients',
         data: {
-          items: ['First ingredient'],
-          sections: [{ title: '', items: ['First ingredient'] }],
+          items: [''],
+          sections: [{ title: '', items: [''] }],
         },
       },
       {
         type: 'instructions',
         data: {
-          steps: ['First step'],
-          sections: [{ title: '', steps: ['First step'] }],
+          steps: [''],
+          sections: [{ title: '', steps: [''] }],
         },
       },
     ],
@@ -168,13 +168,18 @@ function normalizeSectionedList(data, key, fallbackItem) {
   }))
 }
 
-function serializeSectionedList(sections, key) {
+function serializeSectionedList(sections, key, { clean = true } = {}) {
   const normalizedSections = sections
     .map((section) => ({
-      title: section.title.trim(),
-      [key]: section.entries.map((entry) => entry.trim()).filter(Boolean),
+      title: clean ? section.title.trim() : section.title,
+      [key]: clean
+        ? section.entries.map((entry) => entry.trim()).filter(Boolean)
+        : section.entries,
     }))
-    .filter((section) => section.title || section[key].length > 0)
+    .filter((section) => {
+      if (!clean) return true
+      return section.title || section[key].length > 0
+    })
 
   const safeSections = normalizedSections.length > 0
     ? normalizedSections
@@ -385,8 +390,8 @@ function AuthorEditor() {
   const addBlock = (type) => {
     const defaultData = {
       hero: { kicker: '', summary: '', backgroundImage: '' },
-      ingredients: { items: ['New ingredient'], sections: [{ title: '', items: ['New ingredient'] }], image: '' },
-      instructions: { steps: ['New step'], sections: [{ title: '', steps: ['New step'] }] },
+      ingredients: { items: [''], sections: [{ title: '', items: [''] }], image: '' },
+      instructions: { steps: [''], sections: [{ title: '', steps: [''] }] },
       notes: { items: ['New note'] },
       nutrition: { items: ['New info'] },
       media: { type: 'image', url: '', caption: '' },
@@ -464,7 +469,7 @@ function AuthorEditor() {
       }
 
       if (block.type === 'ingredients') {
-        const sections = normalizeSectionedList(block.data, 'items', 'New ingredient')
+        const sections = normalizeSectionedList(block.data, 'items', '')
         const sectionedList = serializeSectionedList(sections, 'items')
 
         return {
@@ -478,7 +483,7 @@ function AuthorEditor() {
       }
 
       if (block.type === 'instructions') {
-        const sections = normalizeSectionedList(block.data, 'steps', 'New step')
+        const sections = normalizeSectionedList(block.data, 'steps', '')
         const sectionedList = serializeSectionedList(sections, 'steps')
 
         return {
@@ -594,8 +599,8 @@ function AuthorEditor() {
           blocks.push({
             type: 'ingredients',
             data: {
-              items: ['New ingredient'],
-              sections: [{ title: '', items: ['New ingredient'] }],
+              items: [''],
+              sections: [{ title: '', items: [''] }],
               image: url,
             },
           })
@@ -991,13 +996,11 @@ function AuthorEditor() {
                     <div className="field-group block-field-wide">
                       <label>Ingredients</label>
                       <SectionedListEditor
-                        sections={normalizeSectionedList(block.data, 'items', 'New ingredient')}
+                        sections={normalizeSectionedList(block.data, 'items', '')}
                         itemLabel="Ingredient"
-                        itemPlaceholder="1 cup heavy cream"
-                        sectionPlaceholder="Sauce, filling, topping..."
                         onChange={(sections) => updateBlockData(index, {
                           ...block.data,
-                          ...serializeSectionedList(sections, 'items'),
+                          ...serializeSectionedList(sections, 'items', { clean: false }),
                         })}
                       />
                     </div>
@@ -1017,14 +1020,12 @@ function AuthorEditor() {
                   <div className="field-group">
                     <label>Instructions</label>
                     <SectionedListEditor
-                      sections={normalizeSectionedList(block.data, 'steps', 'New step')}
+                      sections={normalizeSectionedList(block.data, 'steps', '')}
                       itemLabel="Step"
-                      itemPlaceholder="Simmer until the sauce thickens."
-                      sectionPlaceholder="Sauce, chicken, assembly..."
                       multiline
                       onChange={(sections) => updateBlockData(index, {
                         ...block.data,
-                        ...serializeSectionedList(sections, 'steps'),
+                        ...serializeSectionedList(sections, 'steps', { clean: false }),
                       })}
                     />
                   </div>
