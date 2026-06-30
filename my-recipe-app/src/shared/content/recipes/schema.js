@@ -14,10 +14,10 @@ const blockValidators = {
     return errors
   },
   ingredients(block) {
-    return requireStringArray(block.data?.items, 'ingredients.data.items')
+    return requireSectionedStringArray(block.data, 'items', 'ingredients.data')
   },
   instructions(block) {
-    return requireStringArray(block.data?.steps, 'instructions.data.steps')
+    return requireSectionedStringArray(block.data, 'steps', 'instructions.data')
   },
   notes(block) {
     return requireStringArray(block.data?.items, 'notes.data.items')
@@ -181,6 +181,41 @@ function requireStringArray(value, label) {
   return value
     .map((item, index) => (isNonEmptyString(item) ? null : `${label}[${index}] must be a non-empty string.`))
     .filter(Boolean)
+}
+
+function requireSectionedStringArray(data, key, label) {
+  const sections = data?.sections
+
+  if (!sections) {
+    return requireStringArray(data?.[key], `${label}.${key}`)
+  }
+
+  if (!Array.isArray(sections) || sections.length === 0) {
+    return [`${label}.sections must be a non-empty array when provided.`]
+  }
+
+  const errors = []
+
+  sections.forEach((section, sectionIndex) => {
+    const sectionLabel = `${label}.sections[${sectionIndex}]`
+
+    if (!isPlainObject(section)) {
+      errors.push(`${sectionLabel} must be an object.`)
+      return
+    }
+
+    if (section.title !== undefined && typeof section.title !== 'string') {
+      errors.push(`${sectionLabel}.title must be a string when provided.`)
+    }
+
+    errors.push(...requireStringArray(section[key], `${sectionLabel}.${key}`))
+  })
+
+  if (errors.length === 0) {
+    errors.push(...requireStringArray(data?.[key], `${label}.${key}`))
+  }
+
+  return errors
 }
 
 function findDuplicates(values) {

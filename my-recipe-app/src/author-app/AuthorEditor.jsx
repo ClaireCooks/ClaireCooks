@@ -107,12 +107,14 @@ function createEmptyRecipe() {
         type: 'ingredients',
         data: {
           items: ['First ingredient'],
+          sections: [{ title: '', items: ['First ingredient'] }],
         },
       },
       {
         type: 'instructions',
         data: {
           steps: ['First step'],
+          sections: [{ title: '', steps: ['First step'] }],
         },
       },
     ],
@@ -153,6 +155,155 @@ function getRecipeAssetSlug(recipe, routeSlug) {
   }
 
   return recipe.id
+}
+
+function normalizeSectionedList(data, key, fallbackItem) {
+  const sourceSections = Array.isArray(data?.sections) && data.sections.length > 0
+    ? data.sections
+    : [{ title: '', [key]: Array.isArray(data?.[key]) && data[key].length > 0 ? data[key] : [fallbackItem] }]
+
+  return sourceSections.map((section) => ({
+    title: section?.title || '',
+    entries: Array.isArray(section?.[key]) && section[key].length > 0 ? section[key] : [''],
+  }))
+}
+
+function serializeSectionedList(sections, key) {
+  const normalizedSections = sections
+    .map((section) => ({
+      title: section.title.trim(),
+      [key]: section.entries.map((entry) => entry.trim()).filter(Boolean),
+    }))
+    .filter((section) => section.title || section[key].length > 0)
+
+  const safeSections = normalizedSections.length > 0
+    ? normalizedSections
+    : [{ title: '', [key]: [''] }]
+
+  return {
+    [key]: safeSections.flatMap((section) => section[key]),
+    sections: safeSections,
+  }
+}
+
+function moveArrayItem(items, index, direction) {
+  const targetIndex = index + direction
+  if (targetIndex < 0 || targetIndex >= items.length) return items
+
+  const nextItems = [...items]
+  ;[nextItems[index], nextItems[targetIndex]] = [nextItems[targetIndex], nextItems[index]]
+  return nextItems
+}
+
+function SectionedListEditor({
+  sections,
+  itemLabel,
+  itemPlaceholder,
+  sectionPlaceholder,
+  multiline = false,
+  onChange,
+}) {
+  const updateSection = (sectionIndex, updates) => {
+    onChange(sections.map((section, index) => (index === sectionIndex ? { ...section, ...updates } : section)))
+  }
+
+  const updateEntry = (sectionIndex, entryIndex, value) => {
+    const section = sections[sectionIndex]
+    const entries = section.entries.map((entry, index) => (index === entryIndex ? value : entry))
+    updateSection(sectionIndex, { entries })
+  }
+
+  const addEntry = (sectionIndex) => {
+    const section = sections[sectionIndex]
+    updateSection(sectionIndex, { entries: [...section.entries, ''] })
+  }
+
+  const removeEntry = (sectionIndex, entryIndex) => {
+    const section = sections[sectionIndex]
+    const entries = section.entries.filter((_, index) => index !== entryIndex)
+    updateSection(sectionIndex, { entries: entries.length > 0 ? entries : [''] })
+  }
+
+  const moveEntry = (sectionIndex, entryIndex, direction) => {
+    const section = sections[sectionIndex]
+    updateSection(sectionIndex, { entries: moveArrayItem(section.entries, entryIndex, direction) })
+  }
+
+  const addSection = () => {
+    onChange([...sections, { title: '', entries: [''] }])
+  }
+
+  const removeSection = (sectionIndex) => {
+    const nextSections = sections.filter((_, index) => index !== sectionIndex)
+    onChange(nextSections.length > 0 ? nextSections : [{ title: '', entries: [''] }])
+  }
+
+  const moveSection = (sectionIndex, direction) => {
+    onChange(moveArrayItem(sections, sectionIndex, direction))
+  }
+
+  return (
+    <div className="sectioned-list-editor">
+      {sections.map((section, sectionIndex) => (
+        <div className="sectioned-list-section" key={sectionIndex}>
+          <div className="sectioned-list-header">
+            <div className="field-group">
+              <label>Subsection</label>
+              <input
+                type="text"
+                placeholder={sectionPlaceholder}
+                value={section.title}
+                onChange={(event) => updateSection(sectionIndex, { title: event.target.value })}
+              />
+            </div>
+            <div className="sectioned-list-actions">
+              <button className="tool-btn" type="button" onClick={() => moveSection(sectionIndex, -1)} disabled={sectionIndex === 0}>Up</button>
+              <button className="tool-btn" type="button" onClick={() => moveSection(sectionIndex, 1)} disabled={sectionIndex === sections.length - 1}>Down</button>
+              <button className="tool-btn danger" type="button" onClick={() => removeSection(sectionIndex)} disabled={sections.length === 1}>Remove</button>
+            </div>
+          </div>
+
+          <div className="sectioned-list-items">
+            {section.entries.map((entry, entryIndex) => (
+              <div className="sectioned-list-row" key={entryIndex}>
+                <label>
+                  <span>{itemLabel} {entryIndex + 1}</span>
+                  {multiline ? (
+                    <textarea
+                      rows="2"
+                      placeholder={itemPlaceholder}
+                      value={entry}
+                      onChange={(event) => updateEntry(sectionIndex, entryIndex, event.target.value)}
+                    />
+                  ) : (
+                    <input
+                      type="text"
+                      placeholder={itemPlaceholder}
+                      value={entry}
+                      onChange={(event) => updateEntry(sectionIndex, entryIndex, event.target.value)}
+                    />
+                  )}
+                </label>
+                <div className="sectioned-list-actions">
+                  <button className="tool-btn" type="button" onClick={() => moveEntry(sectionIndex, entryIndex, -1)} disabled={entryIndex === 0}>Up</button>
+                  <button className="tool-btn" type="button" onClick={() => moveEntry(sectionIndex, entryIndex, 1)} disabled={entryIndex === section.entries.length - 1}>Down</button>
+                  <button className="tool-btn danger" type="button" onClick={() => removeEntry(sectionIndex, entryIndex)}>Remove</button>
+                </div>
+              </div>
+            ))}
+          </div>
+
+          <button className="sectioned-list-add" type="button" onClick={() => addEntry(sectionIndex)}>
+            Add {itemLabel}
+          </button>
+        </div>
+      ))}
+
+      <button className="sectioned-list-add is-section" type="button" onClick={addSection}>
+        Add Subsection
+      </button>
+    </div>
+  )
 }
 
 function AuthorEditor() {
@@ -234,8 +385,8 @@ function AuthorEditor() {
   const addBlock = (type) => {
     const defaultData = {
       hero: { kicker: '', summary: '', backgroundImage: '' },
-      ingredients: { items: ['New ingredient'], image: '' },
-      instructions: { steps: ['New step'] },
+      ingredients: { items: ['New ingredient'], sections: [{ title: '', items: ['New ingredient'] }], image: '' },
+      instructions: { steps: ['New step'], sections: [{ title: '', steps: ['New step'] }] },
       notes: { items: ['New note'] },
       nutrition: { items: ['New info'] },
       media: { type: 'image', url: '', caption: '' },
@@ -312,23 +463,40 @@ function AuthorEditor() {
         }
       }
 
-      if (['ingredients', 'notes', 'nutrition'].includes(block.type)) {
+      if (block.type === 'ingredients') {
+        const sections = normalizeSectionedList(block.data, 'items', 'New ingredient')
+        const sectionedList = serializeSectionedList(sections, 'items')
+
         return {
           ...block,
           data: {
             ...block.data,
-            items: (block.data.items || []).map((item) => item.trim()).filter(Boolean),
+            ...sectionedList,
             image: block.data.image?.trim() || '',
           },
         }
       }
 
       if (block.type === 'instructions') {
+        const sections = normalizeSectionedList(block.data, 'steps', 'New step')
+        const sectionedList = serializeSectionedList(sections, 'steps')
+
         return {
           ...block,
           data: {
             ...block.data,
-            steps: (block.data.steps || []).map((step) => step.trim()).filter(Boolean),
+            ...sectionedList,
+          },
+        }
+      }
+
+      if (['notes', 'nutrition'].includes(block.type)) {
+        return {
+          ...block,
+          data: {
+            ...block.data,
+            items: (block.data.items || []).map((item) => item.trim()).filter(Boolean),
+            image: block.data.image?.trim() || '',
           },
         }
       }
@@ -423,7 +591,14 @@ function AuthorEditor() {
             data: { ...blocks[ingredientsIndex].data, image: url },
           }
         } else {
-          blocks.push({ type: 'ingredients', data: { items: ['New ingredient'], image: url } })
+          blocks.push({
+            type: 'ingredients',
+            data: {
+              items: ['New ingredient'],
+              sections: [{ title: '', items: ['New ingredient'] }],
+              image: url,
+            },
+          })
         }
       }
 
@@ -814,10 +989,16 @@ function AuthorEditor() {
                 {block.type === 'ingredients' && (
                   <div className="block-field-grid">
                     <div className="field-group block-field-wide">
-                      <label>Items (one per line)</label>
-                      <textarea
-                        value={(block.data.items || []).join('\n')}
-                        onChange={(e) => updateBlockData(index, { ...block.data, items: e.target.value.split('\n') })}
+                      <label>Ingredients</label>
+                      <SectionedListEditor
+                        sections={normalizeSectionedList(block.data, 'items', 'New ingredient')}
+                        itemLabel="Ingredient"
+                        itemPlaceholder="1 cup heavy cream"
+                        sectionPlaceholder="Sauce, filling, topping..."
+                        onChange={(sections) => updateBlockData(index, {
+                          ...block.data,
+                          ...serializeSectionedList(sections, 'items'),
+                        })}
                       />
                     </div>
                     <div className="field-group block-field-wide">
@@ -832,15 +1013,31 @@ function AuthorEditor() {
                   </div>
                 )}
 
-                {(block.type === 'instructions' || block.type === 'notes' || block.type === 'nutrition') && (
+                {block.type === 'instructions' && (
                   <div className="field-group">
-                    <label>{block.type === 'instructions' ? 'Steps' : 'Items'} (one per line)</label>
+                    <label>Instructions</label>
+                    <SectionedListEditor
+                      sections={normalizeSectionedList(block.data, 'steps', 'New step')}
+                      itemLabel="Step"
+                      itemPlaceholder="Simmer until the sauce thickens."
+                      sectionPlaceholder="Sauce, chicken, assembly..."
+                      multiline
+                      onChange={(sections) => updateBlockData(index, {
+                        ...block.data,
+                        ...serializeSectionedList(sections, 'steps'),
+                      })}
+                    />
+                  </div>
+                )}
+
+                {(block.type === 'notes' || block.type === 'nutrition') && (
+                  <div className="field-group">
+                    <label>Items (one per line)</label>
                     <textarea
-                      value={(block.data.items || block.data.steps || []).join('\n')}
+                      value={(block.data.items || []).join('\n')}
                       onChange={(e) => {
                         const lines = e.target.value.split('\n')
-                        const key = block.type === 'instructions' ? 'steps' : 'items'
-                        updateBlockData(index, { ...block.data, [key]: lines })
+                        updateBlockData(index, { ...block.data, items: lines })
                       }}
                     />
                   </div>
